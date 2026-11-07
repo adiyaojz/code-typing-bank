@@ -1101,7 +1101,9 @@ function openChallenge(){
 function syncKbDock(){
   document.body.classList.toggle('practice-fixed', !!practicing);
   const el = $('kbmap'); if (!el) return;
-  const visible = el.classList.contains('show') && !document.body.classList.contains('kbd-open');
+  const visible = el.classList.contains('show') &&
+                  !document.body.classList.contains('kbd-open') &&
+                  !document.body.classList.contains('settings-open');
   document.body.classList.toggle('kbmap-dock', visible);
   document.documentElement.style.setProperty('--kb-h', visible ? el.offsetHeight + 'px' : '0px');
   fitKbScale();
@@ -1201,11 +1203,19 @@ function logout(){
   $('loginOverlay').classList.add('show'); $('nameInput').focus();
 }
 
+/* 设置弹层统一开关：同步层级状态、底部占位与输入焦点 */
+function setSettingsOpen(open){
+  $('settingsOverlay').classList.toggle('show', open);
+  document.body.classList.toggle('settings-open', open);
+  syncKbDock();
+  if (!open) focusGhost();
+}
+
 /* ---------- 事件绑定 ---------- */
 function bindEvents(){
   $('btnTheme').onclick = () => updateSetting('dark', !settings.dark);
-  $('btnSettings').onclick = () => $('settingsOverlay').classList.add('show');
-  $('btnCloseSettings').onclick = () => { $('settingsOverlay').classList.remove('show'); focusGhost(); };
+  $('btnSettings').onclick = () => setSettingsOpen(true);
+  $('btnCloseSettings').onclick = () => setSettingsOpen(false);
   $('userChip').onclick = logout;
   $('btnBack').onclick = exitPractice;
   $('btnBack2').onclick = exitPractice;
@@ -1308,7 +1318,7 @@ function bindEvents(){
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       if ($('challengeOverlay').classList.contains('show')) $('challengeOverlay').classList.remove('show');
-      else if ($('settingsOverlay').classList.contains('show')) $('settingsOverlay').classList.remove('show');
+      else if ($('settingsOverlay').classList.contains('show')) setSettingsOpen(false);
       else if (practicing) exitPractice();
     }
   });
