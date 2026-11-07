@@ -62,6 +62,11 @@ let sourceLabel = '线上';
 let langKey = localStorage.getItem(LS.lang) || 'cpp';
 let currentUser = '';
 let practicing = false;
+/* 练习态一屏布局：整页固定，仅代码区内部滚动 */
+function setPracticing(v){
+  practicing = v;
+  document.body.classList.toggle('practice-fixed', v);
+}
 let queue = [], curMod = 0, itemIdx = 0, charIdx = 0;
 let curItem = null, lineEls = [];
 let startTs = null, timerId = null;
@@ -354,7 +359,7 @@ function startModule(i){
   startTs = null; clearInterval(timerId);
   stopChallengeTimers();
   $('chTimer').style.display = 'none';
-  practicing = true;
+  setPracticing(true);
   $('menu').style.display = 'none';
   $('practice').style.display = 'block';
   applySettings();
@@ -447,6 +452,8 @@ function renderCode(){
   });
   const padBottom = document.createElement('div'); padBottom.className = 'code-pad';
   box.appendChild(padBottom);
+  // 布局稳定后按代码区实际高度重算留白，并重新把当前行居中
+  requestAnimationFrame(() => { syncCodePadding(); lastCenterRow = -1; applyCursor(); });
 }
 
 function locate(pos){
@@ -642,7 +649,7 @@ function nextItem(){
   loadItem();
 }
 function finishRound(){
-  clearInterval(timerId); practicing = false;
+  clearInterval(timerId); setPracticing(false);
   stopChallengeTimers();
   document.body.classList.remove('kbd-open');
   $('chTimer').style.display = 'none';
@@ -692,7 +699,7 @@ function retry(){
   else startModule(curMod);
 }
 function exitPractice(){
-  clearInterval(timerId); practicing = false;
+  clearInterval(timerId); setPracticing(false);
   stopChallengeTimers();
   $('chTimer').style.display = 'none';
   document.body.classList.remove('kbd-open');
@@ -910,7 +917,7 @@ function startReview(){
   itemIdx = 0; correctKeys = 0; mistakes = 0; roundWrong = {}; roundWrongItems = {}; roundRedone = true;
   startTs = null; clearInterval(timerId); stopChallengeTimers();
   $('chTimer').style.display = 'none';
-  practicing = true;
+  setPracticing(true);
   $('menu').style.display = 'none'; $('practice').style.display = 'block';
   applySettings(); loadItem(); focusGhost();
   toast('到期错题 ' + queue.length + ' 条，全部答对即可拉长复习间隔');
@@ -1042,7 +1049,7 @@ function startChallengeRound(){
   itemIdx = 0; correctKeys = 0; mistakes = 0; roundWrong = {}; roundWrongItems = {}; roundRedone = true;
   startTs = null; clearInterval(timerId);
   challenge.deadline = Date.now() + challenge.duration * 1000;
-  practicing = true;
+  setPracticing(true);
   $('menu').style.display = 'none'; $('practice').style.display = 'block';
   $('challengeOverlay').classList.remove('show');
   $('chTimer').style.display = 'inline';
@@ -1087,11 +1094,23 @@ function openChallenge(){
 /* ---------- 指法键盘图 ---------- */
 /* 底部浮层占位：让 .wrap 留出与浮窗等高的空白，长代码不被遮挡 */
 function syncKbDock(){
+  document.body.classList.toggle('practice-fixed', !!practicing);
   const el = $('kbmap'); if (!el) return;
   const visible = el.classList.contains('show') && !document.body.classList.contains('kbd-open');
   document.body.classList.toggle('kbmap-dock', visible);
   document.documentElement.style.setProperty('--kb-h', visible ? el.offsetHeight + 'px' : '0px');
   fitKbScale();
+  syncCodePadding();
+}
+/* 上下留白 = 代码区半高，保证首行/末行也能滚到正中间 */
+function syncCodePadding(){
+  const box = $('code');
+  if (!box || !box.classList.contains('padded') || !box.clientHeight) return;
+  const h = Math.max(24, Math.round(box.clientHeight / 2));
+  if (box.style.getPropertyValue('--code-pad') === h + 'px') return;
+  box.style.setProperty('--code-pad', h + 'px');
+  lastCenterRow = -1;
+  if (practicing && curItem) applyCursor();
 }
 /* 键盘图整体等比缩放：浮窗变高变矮时 5 行键始终全部可见，按键长宽比不变 */
 function fitKbScale(){
