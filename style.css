@@ -118,7 +118,7 @@ body.dark .tag{background:#293244}
   background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:30px 26px;min-height:170px;display:flex;align-items:center;box-shadow:var(--shadow);
 }
-.code{position:relative;z-index:1;font-size:var(--code-size);line-height:1.9;font-weight:550;white-space:pre-wrap;word-break:break-word;overflow-x:auto;-webkit-overflow-scrolling:touch;pointer-events:none}
+.code{position:relative;z-index:1;font-size:var(--code-size);line-height:1.9;font-weight:550;white-space:pre-wrap;word-break:break-word;overflow-x:auto;overflow-y:auto;max-height:min(46vh,420px);scrollbar-width:thin;-webkit-overflow-scrolling:touch;pointer-events:none}
 /* 透明输入层必须真实可聚焦、可点击，否则 iOS / 安卓输入法不会弹出软键盘。
    用 opacity .01 + 16px 字号（防 iOS 自动缩放），覆盖整个代码区。 */
 #ghost{
@@ -289,7 +289,7 @@ body.dark .card button.ghost{background:#293244}
   .stage{padding:18px 12px;min-height:130px}
   /* 完整程序有十几行：手机上限制代码区高度，避免把符号条挤出屏幕；
      由 app.js 自动把当前待敲字符滚动到可视区，学生不用手动滚动 */
-  .code{font-size:var(--code-size);white-space:pre-wrap;overflow-wrap:anywhere;max-height:32vh;overflow-y:hidden}
+  .code{font-size:var(--code-size);white-space:pre-wrap;overflow-wrap:anywhere;max-height:32vh;overflow-y:auto}
   .p-stats{gap:10px}
   .history{grid-template-columns:repeat(2,1fr)}
   .search{width:100%}
@@ -325,14 +325,19 @@ body.dark .srs-card{background:linear-gradient(100deg,#3a2626,#3a3020);border-co
   background:var(--card);border:1px solid var(--line);border-bottom:0;
   border-radius:14px 14px 0 0;padding:10px 14px 12px;
   box-shadow:0 -10px 30px rgba(31,36,48,.18);
-  max-height:46vh;overflow-y:auto;overscroll-behavior:contain;
+  max-height:70vh;flex-direction:column;overflow:hidden;
 }
 body.dark .kbmap{box-shadow:0 -10px 30px rgba(0,0,0,.45)}
-.kbmap.show{display:block}
+.kbmap.show{display:flex}
+/* 顶部把手：上下拖动调整浮窗高度（双击恢复默认） */
+.kbmap-grip{flex:none;height:16px;margin:0 0 6px;cursor:ns-resize;touch-action:none;user-select:none;display:grid;place-items:center}
+.kbmap-grip::before{content:'';width:52px;height:4px;border-radius:99px;background:var(--line)}
+.kbmap-grip:hover::before{background:var(--accent)}
+.kbmap-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
 body.kbd-open .kbmap{display:none!important}
 /* 浮层占位：避免遮住代码区与下方释义 */
 body.kbmap-dock .wrap{padding-bottom:calc(var(--kb-h,0px) + 24px)}
-.kbmap-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:9px}
+.kbmap-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:9px;flex:none}
 .kbmap-head b{font-size:12.5px}
 .kbmap-tip{font-size:11px;color:var(--ink-3);flex:1;min-width:140px}
 .kb-finger{font-size:11.5px;color:var(--accent);background:var(--accent-soft);border-radius:8px;padding:6px 10px;margin-bottom:9px;font-weight:600}
@@ -382,7 +387,7 @@ body.dark .f-RI{background:#23403e} body.dark .f-RM{background:#302c4a} body.dar
   .kb-key{min-width:26px;height:31px;font-size:10px;padding:0 3px}
   .kb-key.kb-wide{min-width:46px;font-size:9px}
   .kb-key.kb-space{min-width:130px}
-  .kbmap{padding:10px;max-height:38vh}
+  .kbmap{padding:10px}
   .kbmap-tip{display:none}
   .ch-row{grid-template-columns:28px 1fr 58px 52px;gap:5px;font-size:11px;padding:7px 8px}
   .ch-row .fin{display:none}

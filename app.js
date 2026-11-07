@@ -10,7 +10,8 @@ const LS = {
   settings: 'ct_settings_v2', user: 'ct_user_v2', done: 'ct_done_v2',
   history: 'ct_history_v2', bankCache: 'ct_bank_cache_v2',
   bankOverride: 'ct_bank_override_v2', lang: 'ct_lang_v2',
-  srs: 'ct_srs_v2', bankDefaultApplied: 'ct_bank_default_v3'
+  srs: 'ct_srs_v2', bankDefaultApplied: 'ct_bank_default_v3',
+  kbHeight: 'ct_kb_height_v1'
 };
 
 /* ---------- 离线兜底题库（仅在完全取不到线上题库时使用） ---------- */
@@ -71,6 +72,8 @@ let roundRedone = false;         // 本轮是否已自动重练过错题
 let roundWrongItems = {};        // 本轮打错过的完整词条，供自动重练
 let kbMap = null;                // 指法键盘图控制器
 let kbExpanded = true;
+let kbUserHeight = 0;           // 用户拖出来的浮窗高度（0 = 跟随内容）
+let lastCenterRow = -1;         // 上次居中过的代码行，避免逐字抖动
 let challenge = null;            // 当前房间
 let chTimerId = null, chPollId = null, chReportId = null;
 
@@ -408,6 +411,7 @@ function prevWordStart(s, pos){
 
 function renderCode(){
   const box = $('code'); box.innerHTML = ''; lineEls = [];
+  lastCenterRow = -1; box.scrollTop = 0;
   box.classList.toggle('no-hl', !settings.highlight);
   // 逐字符 token 类别；review 模式下每条词条自带语言
   const lang = (curItem && curItem.lang) || roundMeta.lang || langKey;
@@ -444,13 +448,19 @@ function locate(pos){
   }
   return { r: lines.length-1, c: lines[lines.length-1].length };
 }
-/* 长代码：只在代码区内部滚动，让「当前待敲的字」始终可见，不滚动整页 */
-function ensureVisible(sp){
+/* 长代码：当前待敲行滚动到代码区垂直中部；同一行内逐字敲击不重复滚动 */
+function ensureVisible(sp, row){
   const box = $('code');
   if (!box || box.scrollHeight <= box.clientHeight + 2) return;
-  const br = box.getBoundingClientRect(), sr = sp.getBoundingClientRect();
-  if (sr.top < br.top + 4) box.scrollTop -= (br.top - sr.top) + 24;
-  else if (sr.bottom > br.bottom - 4) box.scrollTop += (sr.bottom - br.bottom) + 24;
+  if (row === lastCenterRow) return;
+  lastCenterRow = row;
+  const ln = box.children[row]; if (!ln) return;
+  const target = ln.offsetTop - (box.clientHeight - ln.offsetHeight) / 2;
+  const maxTop = Math.max(0, box.scrollHeight - box.clientHeight);
+  const top = Math.max(0, Math.min(maxTop, target));
+  if (Math.abs(box.scrollTop - top) < 8) return;
+  if (box.scrollTo) box.scrollTo({ top, behavior: 'smooth' });
+  else box.scrollTop = top;
 }
 function applyCursor(){
   const flat = curItem.code;
@@ -464,7 +474,7 @@ function applyCursor(){
   if (charIdx < flat.length) {
     const { r, c } = locate(charIdx);
     const sp = lineEls[r] && lineEls[r][c];
-    if (sp) { sp.classList.remove('pend'); sp.classList.add('cur'); ensureVisible(sp); }
+    if (sp) { sp.classList.remove('pend'); sp.classList.add('cur'); ensureVisible(sp, r); }
   }
 }
 function flashWrong(){
@@ -769,7 +779,7 @@ function bindInput(){
         $('overlay').classList.contains('show') ||
         $('loginOverlay').classList.contains('show')) return;
     if (e.target === ghost) return;
-    if (e.target.closest && e.target.closest('button, input, select, textarea')) return;
+    if (e.target.closest && e.target.closest('button, input, select, textarea, .kbmap-grip')) return;
     focusGhost();
   });
 
@@ -1050,6 +1060,43 @@ function syncKbDock(){
   document.documentElement.style.setProperty('--kb-h', visible ? el.offsetHeight + 'px' : '0px');
 }
 
+/* 拖动把手：上下拖动调整浮窗高度，写入本地偏好；双击恢复默认 */
+function applyKbHeight(h){
+  const el = $('kbmap'); if (!el) return;
+  el.style.height = h > 0 ? h + 'px' : '';
+  syncKbDock();
+}
+function initKbResize(){
+  const grip = $('kbGrip'), el = $('kbmap');
+  if (!grip || !el) return;
+  kbUserHeight = parseInt(localStorage.getItem(LS.kbHeight) || '0', 10) || 0;
+  if (kbUserHeight) applyKbHeight(kbUserHeight);
+  let dragging = false, startY = 0, startH = 0;
+  const minH = 110, maxH = () => Math.max(minH + 40, Math.round(window.innerHeight * 0.7));
+  grip.addEventListener('pointerdown', e => {
+    e.preventDefault(); e.stopPropagation();   // 不抢打字输入焦点
+    if (!kbExpanded) toggleKbMap(true);
+    dragging = true; startY = e.clientY; startH = el.offsetHeight;
+    try { grip.setPointerCapture(e.pointerId); } catch(_){}
+  });
+  grip.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const h = Math.min(maxH(), Math.max(minH, startH + (startY - e.clientY)));
+    kbUserHeight = h; applyKbHeight(h);
+  });
+  const endDrag = e => {
+    if (!dragging) return;
+    dragging = false;
+    try { grip.releasePointerCapture(e.pointerId); } catch(_){}
+    save(LS.kbHeight, String(kbUserHeight));
+  };
+  grip.addEventListener('pointerup', endDrag);
+  grip.addEventListener('pointercancel', endDrag);
+  grip.addEventListener('dblclick', () => {
+    kbUserHeight = 0; localStorage.removeItem(LS.kbHeight); applyKbHeight(0);
+  });
+}
+
 function buildKbMap(){
   if (!window.CT || !$('kbBody')) return;
   kbMap = CT.buildKeyboard($('kbBody'), ch => {
@@ -1061,7 +1108,7 @@ function toggleKbMap(force){
   kbExpanded = (typeof force === 'boolean') ? force : !kbExpanded;
   const body = $('kbBody'); if (body) body.style.display = kbExpanded ? '' : 'none';
   const btn = $('btnKbToggle'); if (btn) btn.textContent = kbExpanded ? '收起' : '展开';
-  syncKbDock();
+  applyKbHeight(kbExpanded ? kbUserHeight : 0);
 }
 
 /* ---------- 账号 ---------- */
@@ -1223,6 +1270,7 @@ function bindEvents(){
   applySettings();
   buildSymKeys();
   buildKbMap();
+  initKbResize();
   toggleKbMap(true);
   bindInput();
   bindEvents();
