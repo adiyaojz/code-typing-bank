@@ -45,13 +45,18 @@ const LANG_ORDER = ['cpp', 'basic', 'python', 'c', 'arduino', 'scratch', 'symbol
 const DEFAULT_BANK_URL = 'https://adiyaojz.github.io/code-typing-bank/bank.json';
 
 const DEFAULTS = {
-  round: 12, strict: false, skipCJK: false, sound: false,
+  round: 12, strict: false, skipCJK: false, sound: true,
   symbar: true, font: 24, dark: false, bankUrl: DEFAULT_BANK_URL,
   highlight: true, keyboard: true, autoRedo: true, imeRealtime: true, wordMode: true
 };
 
 /* ---------- 状态 ---------- */
 let settings = loadJSON(LS.settings, DEFAULTS);
+/* 一次性迁移：旧版本默认关闭音效；用户要求输入音效后改为开启，已手动关闭的仍尊重 */
+if (!localStorage.getItem('ct_sound_default_v2')) {
+  if (settings.sound === false) { settings.sound = true; save(LS.settings, settings); }
+  try { localStorage.setItem('ct_sound_default_v2', '1'); } catch(e){}
+}
 let BANK = null;                 // 规范化后的题库
 let sourceLabel = '线上';
 let langKey = localStorage.getItem(LS.lang) || 'cpp';
@@ -417,6 +422,10 @@ function renderCode(){
   const lang = (curItem && curItem.lang) || roundMeta.lang || langKey;
   const toks = (window.CT && settings.highlight) ? CT.tokenize(curItem.code, lang) : null;
   const lines = curItem.code.split('\n');
+  // 长代码：上下各留半屏空白，首行/末行也能滚到代码区垂直中部
+  box.classList.toggle('padded', lines.length >= 6);
+  const padTop = document.createElement('div'); padTop.className = 'code-pad';
+  box.appendChild(padTop);
   let flat = 0;
   lines.forEach((line, r) => {
     const ln = document.createElement('div'); ln.className = 'ln';
@@ -436,6 +445,8 @@ function renderCode(){
     }
     box.appendChild(ln); lineEls.push(spans);
   });
+  const padBottom = document.createElement('div'); padBottom.className = 'code-pad';
+  box.appendChild(padBottom);
 }
 
 function locate(pos){
@@ -454,7 +465,8 @@ function ensureVisible(sp, row){
   if (!box || box.scrollHeight <= box.clientHeight + 2) return;
   if (row === lastCenterRow) return;
   lastCenterRow = row;
-  const ln = box.children[row]; if (!ln) return;
+  const ln = lineEls[row] && lineEls[row][0] && lineEls[row][0].parentElement;
+  if (!ln) return;
   const target = ln.offsetTop - (box.clientHeight - ln.offsetHeight) / 2;
   const maxTop = Math.max(0, box.scrollHeight - box.clientHeight);
   const top = Math.max(0, Math.min(maxTop, target));
@@ -528,6 +540,7 @@ function feedChar(ch){
     applyCursor(); updateNextChar(); updateStats(); updateProgress(); playTick(true);
     if (charIdx >= s.length) {
       clearInterval(timerId);
+      playFinish();
       recordRight(curItem, itemMistakes);
       setTimeout(nextItem, 280);
     }
@@ -562,16 +575,36 @@ function skipItem(){
   toast('已跳过本条');
   nextItem();
 }
-function playTick(ok){
-  if (!settings.sound) return;
+/* 输入音效：正确键清脆短音、打错低沉双音、完成一条上行双音；Web Audio 合成，无需联网 */
+function tone(freq, dur, type, vol, delay){
+  if (!audioCtx) return;
+  const t0 = audioCtx.currentTime + (delay || 0);
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = type || 'triangle';
+  o.frequency.setValueAtTime(freq, t0);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(vol || 0.06, t0 + 0.006);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(t0); o.stop(t0 + dur + 0.02);
+}
+function audioReady(){
+  if (!settings.sound) return false;
   try {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-    o.type = 'sine'; o.frequency.value = ok ? 660 : 220;
-    g.gain.setValueAtTime(0.035, audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.07);
-    o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.08);
-  } catch(e){}
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return true;
+  } catch(e){ return false; }
+}
+function playTick(ok){
+  if (!audioReady()) return;
+  if (ok) tone(880, 0.045, 'triangle', 0.055);
+  else { tone(220, 0.085, 'sawtooth', 0.04); tone(165, 0.085, 'sawtooth', 0.028, 0.06); }
+}
+function playFinish(){
+  if (!audioReady()) return;
+  tone(659, 0.09, 'triangle', 0.05);
+  tone(880, 0.13, 'triangle', 0.05, 0.09);
 }
 
 function updateTimer(){
@@ -1058,6 +1091,20 @@ function syncKbDock(){
   const visible = el.classList.contains('show') && !document.body.classList.contains('kbd-open');
   document.body.classList.toggle('kbmap-dock', visible);
   document.documentElement.style.setProperty('--kb-h', visible ? el.offsetHeight + 'px' : '0px');
+  fitKbScale();
+}
+/* 键盘图整体等比缩放：浮窗变高变矮时 5 行键始终全部可见，按键长宽比不变 */
+function fitKbScale(){
+  const body = $('kbBody'); if (!body || !body.clientHeight) return;
+  const inner = body.querySelector('.kb-scale'); if (!inner) return;
+  if ('zoom' in inner.style) inner.style.zoom = '1';
+  else inner.style.transform = 'none';
+  const cw = inner.scrollWidth, ch = inner.scrollHeight;
+  const aw = body.clientWidth, ah = body.clientHeight;
+  if (!cw || !ch || !ah) return;
+  const s = Math.max(0.42, Math.min(1.5, aw / cw, ah / ch));
+  if ('zoom' in inner.style) inner.style.zoom = String(s);
+  else inner.style.transform = 'scale(' + s + ')';
 }
 
 /* 拖动把手：上下拖动调整浮窗高度，写入本地偏好；双击恢复默认 */
@@ -1072,7 +1119,7 @@ function initKbResize(){
   kbUserHeight = parseInt(localStorage.getItem(LS.kbHeight) || '0', 10) || 0;
   if (kbUserHeight) applyKbHeight(kbUserHeight);
   let dragging = false, startY = 0, startH = 0;
-  const minH = 110, maxH = () => Math.max(minH + 40, Math.round(window.innerHeight * 0.7));
+  const minH = 140, maxH = () => Math.max(minH + 40, Math.round(window.innerHeight * 0.7));
   grip.addEventListener('pointerdown', e => {
     e.preventDefault(); e.stopPropagation();   // 不抢打字输入焦点
     if (!kbExpanded) toggleKbMap(true);
@@ -1099,10 +1146,13 @@ function initKbResize(){
 
 function buildKbMap(){
   if (!window.CT || !$('kbBody')) return;
-  kbMap = CT.buildKeyboard($('kbBody'), ch => {
+  const body = $('kbBody');
+  body.innerHTML = '<div class="kb-scale"></div>';
+  kbMap = CT.buildKeyboard(body.querySelector('.kb-scale'), ch => {
     if (ch != null && ch !== '') { for (const c of [...ch]) feedChar(c); }
     focusGhost();
   });
+  fitKbScale();
 }
 function toggleKbMap(force){
   kbExpanded = (typeof force === 'boolean') ? force : !kbExpanded;

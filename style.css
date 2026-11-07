@@ -1,6 +1,6 @@
 /* ==================== 代码打字练习 · 样式 ==================== */
 :root{
-  --bg:#f2f4fa; --card:#fff; --ink:#1f2430; --ink-2:#5b6478; --ink-3:#aab1c2;
+  --bg:#f2f4fa; --card:#fff; --ink:#1f2430; --ink-2:#5b6478; --ink-3:#7f8799;
   --line:#e6e9f2; --accent:#4b6bfb; --accent-soft:#eaf0ff;
   --good:#17a06e; --good-soft:#e4f6ee; --bad:#e5484d;
   --warn-bg:#fff7e6; --warn-line:#ffd591;
@@ -9,7 +9,7 @@
   --shadow:0 6px 24px rgba(31,36,48,.05);
 }
 body.dark{
-  --bg:#141821; --card:#1e2431; --ink:#e8edf8; --ink-2:#a5b0c6; --ink-3:#6f7a90;
+  --bg:#141821; --card:#1e2431; --ink:#e8edf8; --ink-2:#a5b0c6; --ink-3:#93a1ba;
   --line:#2c3546; --accent:#6b86ff; --accent-soft:#27355c;
   --good:#3ecf9a; --good-soft:#1c3a31; --bad:#ff6b70;
   --warn-bg:#3a3220; --warn-line:#6b5a2c;
@@ -118,14 +118,16 @@ body.dark .tag{background:#293244}
   background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:30px 26px;min-height:170px;display:flex;align-items:center;box-shadow:var(--shadow);
 }
-.code{position:relative;z-index:1;font-size:var(--code-size);line-height:1.9;font-weight:550;white-space:pre-wrap;word-break:break-word;overflow-x:auto;overflow-y:auto;max-height:min(46vh,420px);scrollbar-width:thin;-webkit-overflow-scrolling:touch;pointer-events:none}
+.code{position:relative;z-index:1;flex:1;min-width:0;width:100%;font-size:var(--code-size);line-height:1.9;font-weight:600;white-space:pre-wrap;word-break:break-word;overflow-x:auto;overflow-y:auto;max-height:min(46vh,420px);scrollbar-width:none;-webkit-overflow-scrolling:touch;pointer-events:none}
+/* 代码区改为程序化跟随当前行居中，隐藏会落在框内、很突兀的原生滚动条 */
+.code::-webkit-scrollbar{display:none;width:0;height:0}
 /* 透明输入层必须真实可聚焦、可点击，否则 iOS / 安卓输入法不会弹出软键盘。
    用 opacity .01 + 16px 字号（防 iOS 自动缩放），覆盖整个代码区。 */
 #ghost{
   position:absolute;inset:0;z-index:2;width:100%;height:100%;
   box-sizing:border-box;border:0;margin:0;padding:0;
   background:transparent;color:transparent;caret-color:transparent;
-  opacity:.01;font-size:16px;line-height:1.9;
+  opacity:.01;font-size:16px;line-height:1.9;overflow:hidden;resize:none;
   -webkit-appearance:none;appearance:none;border-radius:var(--radius);
   touch-action:manipulation;
 }
@@ -145,15 +147,18 @@ body.kbd-open .wrap{padding-top:8px}
 body.kbd-open .stage{min-height:120px;padding:16px 12px}
 body.kbd-open .p-stats{gap:9px}
 .code .ln{display:block;min-height:1.9em}
+/* 长代码上下留白：让首行/末行也能滚到代码区垂直中部 */
+.code-pad{display:none}
+.code.padded .code-pad{display:block;height:clamp(24px,24vh,220px)}
 .code span{transition:color .1s,opacity .1s}
 /* ---------- 语法高亮配色 ---------- */
 :root{
-  --tok-kw:#a626a4; --tok-str:#3f8f42; --tok-num:#b76b01;
-  --tok-com:#98a0ad; --tok-op:#0b76b8; --tok-id:#263042;
+  --tok-kw:#8b1a91; --tok-str:#256f2c; --tok-num:#9c4a00;
+  --tok-com:#5f6a7d; --tok-op:#0a5c96; --tok-id:#141c2a;
 }
 body.dark{
-  --tok-kw:#c792ea; --tok-str:#8bc98b; --tok-num:#e5b567;
-  --tok-com:#717c92; --tok-op:#6cb6e8; --tok-id:#d9e1f2;
+  --tok-kw:#e0a6f5; --tok-str:#a4e6a4; --tok-num:#f0c375;
+  --tok-com:#a0abc0; --tok-op:#8fd0f7; --tok-id:#f0f5ff;
 }
 .code .t-kw{color:var(--tok-kw);font-weight:650}
 .code .t-str{color:var(--tok-str)}
@@ -164,9 +169,9 @@ body.dark{
 /* 关掉高亮时统一墨色 */
 .code.no-hl span[class*="t-"]{color:inherit;font-weight:inherit;font-style:normal}
 /* 状态用透明度区分，已敲 / 未敲都保留语法色 */
-.code span.pend{opacity:.58}
+.code span.pend{opacity:.82}
 .code span.done{opacity:1}
-.code span.cur{opacity:1;position:relative}
+.code span.cur{opacity:1;position:relative;background:var(--accent-soft);border-radius:3px}
 .code span.newline{font-size:.55em;letter-spacing:0;color:var(--ink-3)}
 .code span.newline.pend{opacity:.5}
 .code span.newline.done{opacity:.85}
@@ -321,7 +326,7 @@ body.dark .srs-card{background:linear-gradient(100deg,#3a2626,#3a3020);border-co
 /* ---------- 指法键盘图：底部固定浮层，长代码不再挤动页面 ---------- */
 .kbmap{
   display:none;position:fixed;left:50%;bottom:0;transform:translateX(-50%);
-  width:min(100%,1040px);z-index:60;margin:0;
+  width:min(100%,780px);z-index:60;margin:0;
   background:var(--card);border:1px solid var(--line);border-bottom:0;
   border-radius:14px 14px 0 0;padding:10px 14px 12px;
   box-shadow:0 -10px 30px rgba(31,36,48,.18);
@@ -333,7 +338,8 @@ body.dark .kbmap{box-shadow:0 -10px 30px rgba(0,0,0,.45)}
 .kbmap-grip{flex:none;height:16px;margin:0 0 6px;cursor:ns-resize;touch-action:none;user-select:none;display:grid;place-items:center}
 .kbmap-grip::before{content:'';width:52px;height:4px;border-radius:99px;background:var(--line)}
 .kbmap-grip:hover::before{background:var(--accent)}
-.kbmap-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.kbmap-body{flex:1;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.kb-scale{flex:none;transform-origin:center center}
 body.kbd-open .kbmap{display:none!important}
 /* 浮层占位：避免遮住代码区与下方释义 */
 body.kbmap-dock .wrap{padding-bottom:calc(var(--kb-h,0px) + 24px)}
@@ -380,6 +386,7 @@ body.dark .f-RI{background:#23403e} body.dark .f-RM{background:#302c4a} body.dar
 .board-empty{padding:18px;text-align:center;color:var(--ink-3);font-size:12px}
 
 @media (max-width:700px){
+  .code.padded .code-pad{height:clamp(20px,17vh,130px)}
   .ch-form{grid-template-columns:repeat(2,1fr)}
   .ch-join{flex-direction:column;align-items:stretch}
   .ch-join button{width:100%}
