@@ -47,7 +47,8 @@ const DEFAULT_BANK_URL = 'https://adiyaojz.github.io/code-typing-bank/bank.json'
 const DEFAULTS = {
   round: 12, strict: false, skipCJK: false, sound: true,
   symbar: true, font: 24, dark: false, bankUrl: DEFAULT_BANK_URL,
-  highlight: true, keyboard: true, autoRedo: true, imeRealtime: true, wordMode: true
+  highlight: true, keyboard: true, autoRedo: true, imeRealtime: true, wordMode: true,
+  kbOpacity: 100
 };
 
 /* ---------- 状态 ---------- */
@@ -248,6 +249,10 @@ function applySettings(){
   $('setWordMode').checked = settings.wordMode !== false;
   $('setFont').value = String(settings.font);
   $('setBankUrl').value = settings.bankUrl || '';
+  const kbOp = (settings.kbOpacity == null) ? 100 : Number(settings.kbOpacity);
+  $('setKbOpacity').value = String(kbOp);
+  $('kbOpacityVal').textContent = kbOp + '%';
+  $('kbmap').style.opacity = String(kbOp / 100);
   $('symbar').classList.toggle('show', !!settings.symbar && practicing);
   $('kbmap').classList.toggle('show', !!settings.keyboard && practicing);
   $('code').classList.toggle('no-hl', !settings.highlight);
@@ -1176,7 +1181,6 @@ function buildKbMap(){
 function toggleKbMap(force){
   kbExpanded = (typeof force === 'boolean') ? force : !kbExpanded;
   const body = $('kbBody'); if (body) body.style.display = kbExpanded ? '' : 'none';
-  const btn = $('btnKbToggle'); if (btn) btn.textContent = kbExpanded ? '收起' : '展开';
   applyKbHeight(kbExpanded ? kbUserHeight : 0);
 }
 
@@ -1237,9 +1241,6 @@ function bindEvents(){
   $('chCode').addEventListener('keydown', e => { if (e.key === 'Enter') joinChallenge(); });
   $('chName').addEventListener('keydown', e => { if (e.key === 'Enter') createChallenge(); });
 
-  /* 指法键盘图 */
-  $('btnKbToggle').onclick = () => toggleKbMap();
-
   $('setRound').onchange = e => { updateSetting('round', parseInt(e.target.value,10)); renderMenu(); };
   $('setStrict').onchange = e => {
     updateSetting('strict', e.target.checked);
@@ -1249,6 +1250,12 @@ function bindEvents(){
   $('setSound').onchange = e => updateSetting('sound', e.target.checked);
   $('setSymbar').onchange = e => updateSetting('symbar', e.target.checked);
   $('setKeyboard').onchange = e => updateSetting('keyboard', e.target.checked);
+  $('setKbOpacity').oninput = e => {
+    const v = parseInt(e.target.value, 10);
+    $('kbmap').style.opacity = String(v / 100);
+    $('kbOpacityVal').textContent = v + '%';
+  };
+  $('setKbOpacity').onchange = e => updateSetting('kbOpacity', parseInt(e.target.value, 10));
   $('setAutoRedo').onchange = e => updateSetting('autoRedo', e.target.checked);
   $('setImeRealtime').onchange = e => updateSetting('imeRealtime', e.target.checked);
   $('setWordMode').onchange = e => {

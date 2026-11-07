@@ -115,11 +115,6 @@
 
     <div class="kbmap" id="kbmap">
       <div class="kbmap-grip" id="kbGrip" title="上下拖动调整大小（键盘图等比缩放，双击恢复默认）"></div>
-      <div class="kbmap-head">
-        <b>指法键盘图</b>
-        <span class="kbmap-tip">高亮下一个要敲的键和该用的手指，点键也能输入</span>
-        <button class="mini-btn" id="btnKbToggle">收起</button>
-      </div>
       <div class="kbmap-body" id="kbBody"></div>
     </div>
 
@@ -190,8 +185,10 @@
       <label class="switch"><input type="checkbox" id="setSymbar"><span></span></label></div>
     <div class="setting-row"><div><label>代码语法高亮</label><div class="desc">关键字、字符串、注释、数字分色显示</div></div>
       <label class="switch"><input type="checkbox" id="setHighlight"><span></span></label></div>
-    <div class="setting-row"><div><label>指法键盘图</label><div class="desc">显示键位与手指分工，高亮下一个要敲的键（点键也能输入）</div></div>
+    <div class="setting-row"><div><label>指法键盘图（收起 / 展开）</label><div class="desc">在此点选即可收起或显示底部键位图；蓝色提示会高亮下一个要敲的键</div></div>
       <label class="switch"><input type="checkbox" id="setKeyboard"><span></span></label></div>
+    <div class="setting-row"><div><label>键盘图透明度</label><div class="desc">整体调整底部键盘图与蓝色提示的透明度，越低越不挡视线</div></div>
+      <div class="kb-opacity"><input type="range" id="setKbOpacity" min="20" max="100" step="5" value="100"><span id="kbOpacityVal">100%</span></div></div>
     <div class="setting-row"><div><label>本轮结束自动重练错题</label><div class="desc">打错的词条在本轮末尾再练一遍，同时加入间隔复习计划</div></div>
       <label class="switch"><input type="checkbox" id="setAutoRedo"><span></span></label></div>
     <div class="setting-row"><div><label>代码字号</label><div class="desc">大屏可调大，手机建议偏小</div></div>

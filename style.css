@@ -357,29 +357,28 @@ body.kbd-open.practice-fixed .p-top{margin-bottom:4px}
 .kbmap{
   display:none;position:fixed;left:50%;bottom:0;transform:translateX(-50%);
   width:min(100%,780px);z-index:60;margin:0;
-  background:rgba(255,255,255,.62);border:1px solid rgba(230,233,242,.7);border-bottom:0;
-  border-radius:14px 14px 0 0;padding:10px 14px 12px;
-  backdrop-filter:blur(16px) saturate(1.15);-webkit-backdrop-filter:blur(16px) saturate(1.15);
-  box-shadow:0 -6px 26px rgba(31,36,48,.10);
+  background:transparent;border:0;padding:4px 12px 10px;
+  box-shadow:none;
+  height:26vh;min-height:150px;
   max-height:70vh;flex-direction:column;overflow:hidden;
 }
-body.dark .kbmap{
-  background:rgba(30,36,49,.66);border-color:rgba(44,53,70,.8);
-  box-shadow:0 -6px 26px rgba(0,0,0,.35);
-}
+body.dark .kbmap{background:transparent;border:0;box-shadow:none}
 .kbmap.show{display:flex}
 /* 顶部把手：上下拖动调整浮窗高度（双击恢复默认） */
-.kbmap-grip{flex:none;height:16px;margin:0 0 6px;cursor:ns-resize;touch-action:none;user-select:none;display:grid;place-items:center}
-.kbmap-grip::before{content:'';width:52px;height:4px;border-radius:99px;background:var(--line)}
+/* 把手近乎隐形，hover 才显现；opacity:0 仍可拖动，不影响调大小 */
+.kbmap-grip{flex:none;height:12px;margin:0 0 2px;cursor:ns-resize;touch-action:none;user-select:none;display:grid;place-items:center;opacity:0;transition:opacity .15s}
+.kbmap:hover .kbmap-grip,.kbmap-grip:hover{opacity:1}
+.kbmap-grip::before{content:'';width:52px;height:3px;border-radius:99px;background:var(--line);opacity:.65}
 .kbmap-grip:hover::before{background:var(--accent)}
 .kbmap-body{flex:1;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .kb-scale{flex:none;transform-origin:center center}
 body.kbd-open .kbmap{display:none!important}
 /* 浮层占位：避免遮住代码区与下方释义 */
 body.kbmap-dock .wrap{padding-bottom:calc(var(--kb-h,0px) + 24px)}
-.kbmap-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:9px;flex:none}
-.kbmap-head b{font-size:12.5px}
-.kbmap-tip{font-size:11px;color:var(--ink-3);flex:1;min-width:140px}
+/* 标题 / 说明 / 收起按钮已移除，收起由设置中的开关控制 */
+.kb-opacity{display:flex;align-items:center;gap:8px;min-width:175px}
+.kb-opacity input[type=range]{flex:1;min-width:100px;accent-color:var(--accent)}
+.kb-opacity span{font-size:11px;color:var(--ink-2);min-width:38px;text-align:right;font-variant-numeric:tabular-nums}
 .kb-finger{font-size:11.5px;color:var(--accent);background:var(--accent-soft);border-radius:8px;padding:6px 10px;margin-bottom:9px;font-weight:600}
 .kb-rows{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .kb-row{display:flex;gap:4px;justify-content:center;margin-bottom:4px;min-width:max-content}
@@ -428,7 +427,6 @@ body.dark .f-RI{background:#23403e} body.dark .f-RM{background:#302c4a} body.dar
   .kb-key.kb-wide{min-width:46px;font-size:9px}
   .kb-key.kb-space{min-width:130px}
   .kbmap{padding:10px}
-  .kbmap-tip{display:none}
   .ch-row{grid-template-columns:28px 1fr 58px 52px;gap:5px;font-size:11px;padding:7px 8px}
   .ch-row .fin{display:none}
   .srs-card{padding:12px}

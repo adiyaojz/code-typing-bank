@@ -135,7 +135,7 @@ function buildKeyboard(container, onKey) {
   container.innerHTML = '';
   const hint = document.createElement('div');
   hint.className = 'kb-finger';
-  hint.textContent = '当前键位：照着代码敲，这里会高亮对应按键和手指';
+  hint.textContent = '准备开始';
   container.appendChild(hint);
 
   const keysWrap = document.createElement('div');
