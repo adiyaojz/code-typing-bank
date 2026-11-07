@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4b6bfb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>代码打字练习 · 多端在线版</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<script>
+/* 把分享凭据带进 PWA 配置，保证「添加到主屏幕」后仍能访问 */
+(function(){
+  try {
+    var sc = new URLSearchParams(location.search).get('sharecode');
+    if (!sc) return;
+    var m = document.querySelector('link[rel="manifest"]');
+    if (m) m.href = 'manifest.webmanifest?sharecode=' + encodeURIComponent(sc);
+  } catch(e){}
+})();
+</script>
+<style>/* 静态托管：隐藏需要服务端的功能入口 */
+#btnChallenge,#btnAdmin{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 顶栏 -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo" id="logo">C+</div>
+      <div>
+        <h1>代码打字练习</h1>
+        <p>代码键位特训 · 敲出来的肌肉记忆</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="lang-toggle" id="langTabs"></div>
+      <button class="icon-btn" id="btnTheme" title="切换深色/浅色">深色</button>
+      <button class="icon-btn" id="btnSettings">设置</button>
+      <div class="user-chip" id="userChip" title="点击切换账号"></div>
+    </div>
+  </div>
+
+  <!-- 菜单页 -->
+  <div id="menu">
+    <div class="stats">
+      <div class="stat">题库分组<b id="mGroups">-</b></div>
+      <div class="stat">词条总数<b id="mWords">-</b></div>
+      <div class="stat">已挑战分组<b id="mDone">-</b></div>
+      <div class="stat">每组抽取<b id="mRound">-</b></div>
+      <div class="stat">题库更新<b id="mUpdated">-</b></div>
+    </div>
+
+    <!-- 错题库 / 间隔重复 -->
+    <div class="srs-card" id="srsCard">
+      <div class="srs-info">
+        <b id="srsTitle">错题库 · 0 条待复习</b>
+        <span id="srsDesc">自动收集敲错的词条，按间隔重复安排复习：越容易错的越勤出现</span>
+      </div>
+      <div class="srs-actions">
+        <button class="mini-btn primary" id="btnSrsStart">开始复习</button>
+        <button class="mini-btn" id="btnSrsExport">导出错题</button>
+        <button class="mini-btn" id="btnSrsClear">清空</button>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <span>SELECT MODULE · 选择词库开始特训</span>
+      <span class="tools">
+        <input class="search" id="search" placeholder="搜索分组…" autocomplete="off">
+        <button class="mini-btn primary" id="btnChallenge" title="多人同时限时比拼">联机限时挑战</button>
+        <button class="mini-btn" id="btnCheckUpdate">检查更新</button>
+        <button class="mini-btn" id="btnAdmin" title="老师入口">题库管理</button>
+      </span>
+    </div>
+    <div class="modules" id="modList"></div>
+
+    <div class="section-title"><span>MY RECORDS · 我的练习记录（保存在本机）</span>
+      <span class="tools"><button class="mini-btn" id="btnClearHistory">清空记录</button></span>
+    </div>
+    <div class="history" id="history"></div>
+  </div>
+
+  <!-- 练习页 -->
+  <div class="practice" id="practice">
+    <div class="p-top">
+      <button class="back" id="btnBack">← 返回词库</button>
+      <div class="p-title" id="pName">模块名<small>第 1 / 12 项</small></div>
+      <div class="p-stats">
+        <span>时间<b id="pTime">0s</b></span>
+        <span>速度<b id="pWpm">0</b></span>
+        <span>字/分<b id="pCpm">0</b></span>
+        <span>准确率<b id="pAcc">100%</b></span>
+        <span class="ch-timer" id="chTimer" style="display:none">剩余<b id="chLeft">0s</b></span>
+      </div>
+    </div>
+    <div class="progress"><i id="progressBar"></i></div>
+    <div class="stage" id="stage">
+      <div class="code mono" id="code"></div>
+      <!-- 透明可聚焦输入层：覆盖整个代码区，手机点一下就能唤起软键盘 -->
+      <input id="ghost" type="text" inputmode="text" autocomplete="off" autocapitalize="off"
+             autocorrect="off" spellcheck="false" lang="en" aria-autocomplete="none"
+             enterkeyhint="done" aria-label="打字输入区">
+    </div>
+    <div class="next-char" id="nextChar">准备开始，直接敲键盘</div>
+    <button class="kbd-hint" id="kbdHint">点这里唤起键盘 · 建议切到英文输入法</button>
+
+    <div class="symbar" id="symbar">
+      <div class="symbar-title">手机 / 平板专用 · 点一下即可输入符号（不用切换键盘）</div>
+      <div class="symkeys" id="symkeys"></div>
+    </div>
+
+    <div class="kbmap" id="kbmap">
+      <div class="kbmap-head">
+        <b>指法键盘图</b>
+        <span class="kbmap-tip">高亮下一个要敲的键和该用的手指，点键也能输入</span>
+        <button class="mini-btn" id="btnKbToggle">收起</button>
+      </div>
+      <div class="kbmap-body" id="kbBody"></div>
+    </div>
+
+    <div class="info">
+      <div class="cn"><b>中文释义</b><span id="cnText">-</span></div>
+      <div class="ex"><b>适用示例</b><pre id="exText">-</pre></div>
+    </div>
+    <div class="hint" id="hint">直接敲键盘即可：必须隔开的空格要敲（如 int a），标点旁的空格自动跳过；Tab 可一次输入 4 个空格</div>
+  </div>
+
+  <div class="footer">
+    题库由老师在「题库管理」页在线维护，改动后刷新本页即可生效 · 无需重新发送文件<br>
+    <span id="footerVersion">-</span>
+  </div>
+</div>
+
+<!-- 结算 -->
+<div class="overlay" id="overlay">
+  <div class="card result">
+    <h2 id="rTitle">本轮完成</h2>
+    <div class="sub" id="rSub">继续加油，肌肉记忆就是重复出来的</div>
+    <div class="nums">
+      <div><b id="rWpm">0</b>速度 WPM</div>
+      <div><b id="rAcc">100%</b>准确率</div>
+      <div><b id="rTime">0s</b>用时</div>
+    </div>
+    <div class="wrong-list" id="rWrong" style="display:none"></div>
+    <div class="board" id="rBoard" style="display:none"></div>
+    <div class="row" style="justify-content:center">
+      <button class="main" id="btnRetry">再来一轮</button>
+      <button class="main ghost" id="btnBack2">返回词库</button>
+    </div>
+  </div>
+</div>
+
+<!-- 快速登录 -->
+<div class="overlay show" id="loginOverlay">
+  <div class="card">
+    <h2>欢迎来到代码打字练习</h2>
+    <p class="sub">输入昵称即可开始，练习进度保存在本机；也可以直接跳过。</p>
+    <input id="nameInput" type="text" placeholder="输入你的昵称（如：小明）" maxlength="12" autocomplete="off">
+    <div class="row">
+      <button class="main" id="btnLogin" style="flex:1">进入练习</button>
+      <button class="main ghost" id="btnSkip">跳过</button>
+    </div>
+  </div>
+</div>
+
+<!-- 设置 -->
+<div class="overlay" id="settingsOverlay">
+  <div class="card wide">
+    <h2>设置</h2>
+    <p class="sub">所有设置保存在本机，换设备互不影响；题库则来自线上，所有人共享。</p>
+
+    <div class="setting-row"><div><label>每轮题量</label><div class="desc">每组随机抽取多少条</div></div>
+      <select id="setRound"><option value="6">6 条</option><option value="12">12 条</option><option value="20">20 条</option><option value="999">全部</option></select></div>
+    <div class="setting-row"><div><label>严格模式（打错整条重来）</label><div class="desc">关掉后：打错原地等待，可用退格修正，更适合小朋友</div></div>
+      <label class="switch"><input type="checkbox" id="setStrict"><span></span></label></div>
+    <div class="setting-row"><div><label>按单词重打（推荐）</label><div class="desc">打错只退回当前单词开头重打，退格一次退一个单词；不会整条代码重来</div></div>
+      <label class="switch"><input type="checkbox" id="setWordMode"><span></span></label></div>
+    <div class="setting-row"><div><label>跳过含中文的词条</label><div class="desc">手机中文输入法不易打代码符号时建议开启</div></div>
+      <label class="switch"><input type="checkbox" id="setSkipCJK"><span></span></label></div>
+    <div class="setting-row"><div><label>英文输入法实时反馈</label><div class="desc">开启后每敲一个字母立刻判定，不等候选词上屏；若个别输入法异常可关闭</div></div>
+      <label class="switch"><input type="checkbox" id="setImeRealtime"><span></span></label></div>
+    <div class="setting-row"><div><label>按键音效</label><div class="desc">轻微反馈音，无需联网</div></div>
+      <label class="switch"><input type="checkbox" id="setSound"><span></span></label></div>
+    <div class="setting-row"><div><label>显示符号快捷条</label><div class="desc">手机 / 平板点按输入括号、分号等</div></div>
+      <label class="switch"><input type="checkbox" id="setSymbar"><span></span></label></div>
+    <div class="setting-row"><div><label>代码语法高亮</label><div class="desc">关键字、字符串、注释、数字分色显示</div></div>
+      <label class="switch"><input type="checkbox" id="setHighlight"><span></span></label></div>
+    <div class="setting-row"><div><label>指法键盘图</label><div class="desc">显示键位与手指分工，高亮下一个要敲的键（点键也能输入）</div></div>
+      <label class="switch"><input type="checkbox" id="setKeyboard"><span></span></label></div>
+    <div class="setting-row"><div><label>本轮结束自动重练错题</label><div class="desc">打错的词条在本轮末尾再练一遍，同时加入间隔复习计划</div></div>
+      <label class="switch"><input type="checkbox" id="setAutoRedo"><span></span></label></div>
+    <div class="setting-row"><div><label>代码字号</label><div class="desc">大屏可调大，手机建议偏小</div></div>
+      <select id="setFont"><option value="18">小</option><option value="24">中</option><option value="30">大</option><option value="36">特大</option></select></div>
+
+    <div class="setting-row" style="border-top:2px solid var(--line);margin-top:8px;padding-top:14px">
+      <div><label>题库来源 <span class="badge" id="bankSource">线上</span></label>
+        <div class="desc">默认从 GitHub 公开题库同步（更新仓库后刷新即生效）；也可填任意 JSON 地址，清空则读本站题库</div></div>
+    </div>
+    <input type="text" id="setBankUrl" placeholder="默认 GitHub 题库；留空 = 本站题库" style="margin-top:8px">
+    <div class="row">
+      <button class="main" id="btnApplyUrl">应用并刷新题库</button>
+      <button class="main ghost" id="btnResetUrl">恢复本站题库</button>
+      <button class="main ghost" id="btnImport">导入题库文件</button>
+      <button class="main ghost" id="btnExport">导出题库</button>
+      <button class="main ghost" id="btnClearLocalBank">清除本机题库覆盖</button>
+    </div>
+    <input type="file" id="fileInput" accept=".json,application/json" hidden>
+    <div class="row"><button class="main ghost" id="btnCloseSettings" style="width:100%">关闭</button></div>
+  </div>
+</div>
+
+<!-- 联机限时挑战 -->
+<div class="overlay" id="challengeOverlay">
+  <div class="card wide">
+    <h2>联机限时挑战</h2>
+    <p class="sub">同一房间用同一套题、各自限时，实时排行榜。把房间码发给同学，手机 / 平板 / 电脑都能加入。</p>
+
+    <div id="chSetup">
+      <div class="ch-form">
+        <label>昵称<input id="chName" type="text" maxlength="12" placeholder="如：小明" autocomplete="off"></label>
+        <label>语言<select id="chLang"></select></label>
+        <label>时长<select id="chDur"><option value="60">60 秒</option><option value="120" selected>120 秒</option><option value="180">180 秒</option><option value="300">300 秒</option></select></label>
+        <label>题量<select id="chCount"><option value="10">10 条</option><option value="15" selected>15 条</option><option value="25">25 条</option><option value="40">40 条</option></select></label>
+      </div>
+      <div class="row"><button class="main" id="btnChCreate" style="flex:1">创建房间</button></div>
+      <div class="ch-join">
+        <input id="chCode" type="text" maxlength="6" placeholder="输入 6 位房间码" autocomplete="off" spellcheck="false">
+        <button class="main ghost" id="btnChJoin">加入房间</button>
+      </div>
+      <div class="ch-msg" id="chMsg"></div>
+    </div>
+
+    <div id="chLobby" style="display:none">
+      <div class="ch-room">
+        <div class="ch-room-label">房间码</div>
+        <b id="chRoomCode">------</b>
+        <button class="mini-btn" id="btnChCopy">复制</button>
+      </div>
+      <p class="sub" id="chRoomInfo">-</p>
+      <div class="ch-board" id="chBoard"></div>
+      <div class="row">
+        <button class="main" id="btnChStart">开始挑战</button>
+        <button class="main ghost" id="btnChRefresh">刷新榜单</button>
+        <button class="main ghost" id="btnChLeave">退出房间</button>
+      </div>
+    </div>
+
+    <div class="row"><button class="main ghost" id="btnChClose" style="width:100%">关闭</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="hl.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
