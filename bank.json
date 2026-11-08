@@ -1,6 +1,6 @@
 {
-  "version": 9,
-  "updatedAt": "2026-11-07T09:08:08.942Z",
+  "version": 10,
+  "updatedAt": "2026-11-08T10:34:44.922Z",
   "langs": {
     "cpp": {
       "label": "C++",
@@ -699,6 +699,456 @@
               "q = queue<int>();",
               "queue 没有 clear()，重新赋值来清空",
               "q = queue<int>();"
+            ]
+          ]
+        },
+        {
+          "name": "deque · 前置准备与特性",
+          "items": [
+            [
+              "#include <deque>",
+              "引入双端队列头文件。deque = double-ended queue，序列式容器；底层分段连续存储，头尾插入删除均 O(1)，支持 O(1) 随机访问；需 <deque>，不需要 <queue>",
+              "#include <deque>\n#include <iostream>\nusing namespace std;\nint main() { deque<int> dq; return 0; }"
+            ],
+            [
+              "using namespace std;",
+              "使用标准命名空间，之后可直接写 deque<int> 而不必写 std::deque<int>；竞赛代码常用，工程代码建议显式写 std:: 避免命名冲突",
+              "#include <deque>\nusing namespace std;\ndeque<int> dq{1, 2, 3};"
+            ],
+            [
+              "// deque: O(1) push/pop at both ends, O(1) random access",
+              "核心特性速记：push_front / push_back / pop_front / pop_back 都是 O(1)；operator[] 与 at() 也是 O(1)，但比 vector 略慢（需先定位分段）；内存按块扩展，不需整体搬移",
+              "deque<int> dq{1, 2, 3};\ndq.push_front(0);\ndq.push_back(4);\n// {0,1,2,3,4}"
+            ]
+          ]
+        },
+        {
+          "name": "deque · 初始化（8 种构造）",
+          "items": [
+            [
+              "deque<int> dq1;",
+              "默认构造：空 deque，size()==0。分配器默认，可随后 push/assign。注意此时 front()、back()、pop 都是未定义行为，必须先判 empty()",
+              "deque<int> dq1;\ncout << dq1.size(); // 0"
+            ],
+            [
+              "deque<int> dq2(5);",
+              "指定元素个数构造：5 个元素，int 值初始化为 0。参数类型是 size_type count；等价于 deque<int> dq2(5, 0)。注意 dq2(5) 与 dq2{5} 含义不同，后者是含单个元素 5 的列表初始化",
+              "deque<int> dq2(5);\n// {0,0,0,0,0}\ndq2[0] = 9;"
+            ],
+            [
+              "deque<int> dq3(5, 10);",
+              "指定个数与初值构造：5 个元素全是 10。参数 (count, value)，value 会被拷贝 count 次；复杂度 O(count)。这是与 vector 一致的填充构造",
+              "deque<int> dq3(5, 10);\ncout << dq3.back(); // 10"
+            ],
+            [
+              "deque<int> dq4(arr, arr + 5);",
+              "迭代器范围构造：把 [first, last) 的元素依次拷入，左闭右开。first/last 可以是数组指针、vector 迭代器或其他 deque 迭代器；复杂度 O(n)，不修改源区间",
+              "int arr[] = {1, 2, 3, 4, 5};\ndeque<int> dq4(arr, arr + 5);\n// {1,2,3,4,5}"
+            ],
+            [
+              "deque<int> dq5(dq3);",
+              "拷贝构造：完整复制另一 deque 的元素与顺序，两容器此后互不影响。复杂度 O(n)、额外 O(n) 内存；源容器必须类型完全一致（元素类型与分配器）",
+              "deque<int> a{1, 2, 3};\ndeque<int> b(a);\nb.push_back(4); // a 仍是 {1,2,3}"
+            ],
+            [
+              "deque<int> dq6 = {1, 3, 5, 7, 9};",
+              "C++11 列表初始化（等号形式）：用 initializer_list 一次装入 5 个元素，最常用写法。注意圆括号 (5, 10) 是「5 个 10」，花括号 {5, 10} 是「元素 5 和 10」",
+              "deque<int> dq6 = {1, 3, 5, 7, 9};\ncout << dq6[2]; // 5"
+            ],
+            [
+              "deque<int> dq7{2, 4, 6, 8, 10};",
+              "C++11 直接列表初始化：与等号形式等价，但花括号构造会优先匹配 initializer_list 构造函数；对 deque<int> 而言结果同为 5 个元素",
+              "deque<int> dq7{2, 4, 6, 8, 10};\nfor (int x : dq7) cout << x << \" \";"
+            ],
+            [
+              "deque<int> dq8(std::move(dq7));",
+              "C++11 移动构造：O(1) 接管源容器的分段内存，不逐元素拷贝。移动后 dq7 变为有效但未指定状态，通常为空，不要再用它的旧值；适合函数返回大 deque",
+              "deque<int> a{1, 2, 3};\ndeque<int> b(std::move(a));\n// b={1,2,3}, a 通常为空"
+            ]
+          ]
+        },
+        {
+          "name": "deque · 赋值与 assign",
+          "items": [
+            [
+              "d2 = dq;",
+              "拷贝赋值 operator=(const deque&)：清空 d2 原有内容并复制 dq 的全部元素，O(n)。赋值后两容器独立；自赋值 d=d 是安全的",
+              "deque<int> a{1, 2}, b;\nb = a; // b={1,2}"
+            ],
+            [
+              "d2 = std::move(dq);",
+              "C++11 移动赋值 operator=(deque&&)：O(1) 接管 dq 的内存，先释放 d2 原有元素。之后 dq 处于有效但未指定状态；比拷贝赋值省一次全量拷贝",
+              "deque<int> a{1, 2, 3}, b;\nb = std::move(a);"
+            ],
+            [
+              "dq = {7, 8, 9};",
+              "C++11 初始化列表赋值 operator=(initializer_list<T>)：用列表整体替换内容，长度随列表变化。等价于 dq.assign({7,8,9})，但写法更短",
+              "deque<int> dq;\ndq = {7, 8, 9};\ncout << dq.size(); // 3"
+            ],
+            [
+              "dq.assign(3, 7);",
+              "assign(count, value)：替换全部内容为 count 个 value，O(n)。与构造形式 (count, value) 参数一致，但用于已存在的容器；会销毁原有元素",
+              "deque<int> dq{1, 2};\ndq.assign(3, 7); // {7,7,7}"
+            ],
+            [
+              "dq.assign(v.begin(), v.end());",
+              "assign(first, last)：用迭代器区间 [first, last) 替换全部内容，左闭右开，O(n)。可跨容器类型（如 vector → deque），只要元素可转换；区间不能来自 dq 自身",
+              "vector<int> v{7, 8, 9};\ndeque<int> dq;\ndq.assign(v.begin(), v.end());"
+            ],
+            [
+              "dq.assign({4, 5, 6});",
+              "assign(initializer_list<T>)：C++11 重载，用花括号列表整体替换内容。与 dq = {4,5,6} 效果相同；注意别写成 assign(3, {4,5,6})，没有这种重载",
+              "deque<int> dq{1, 2};\ndq.assign({4, 5, 6}); // {4,5,6}"
+            ],
+            [
+              "auto a = dq.get_allocator();",
+              "get_allocator()：返回容器使用的分配器副本，无参数、O(1)、不修改容器。竞赛中极少用；主要用于自定义内存管理或用同一分配器构造另一个容器",
+              "deque<int> dq{1, 2};\nauto a = dq.get_allocator();\ndeque<int> d2(a);"
+            ]
+          ]
+        },
+        {
+          "name": "deque · 迭代器（8 个）",
+          "items": [
+            [
+              "auto it = dq.begin();",
+              "begin()：返回指向首元素的随机访问迭代器，可读写；O(1)。空容器时 begin()==end()，不能解引用。deque 迭代器支持 +、-、[]、比较，这点与 list 不同",
+              "deque<int> dq{1, 2, 3};\nauto it = dq.begin();\n*it = 9; cout << dq[0]; // 9"
+            ],
+            [
+              "auto it = dq.end();",
+              "end()：返回尾后迭代器（past-the-end），指向最后一个元素之后，绝不解引用；O(1)。常与 begin() 组成左闭右开区间 [begin, end) 供遍历和算法使用",
+              "for (auto it = dq.begin(); it != dq.end(); ++it)\n    cout << *it;"
+            ],
+            [
+              "auto cit = dq.cbegin();",
+              "cbegin()：C++11，返回 const_iterator，只读，不能通过它改元素；O(1)。即使 dq 本身非 const 也返回只读迭代器，适合表达「这段遍历不修改」",
+              "for (auto cit = dq.cbegin(); cit != dq.cend(); ++cit)\n    cout << *cit;"
+            ],
+            [
+              "auto cit = dq.cend();",
+              "cend()：C++11，const 版尾后迭代器，与 cbegin() 配对；O(1)。注意 cbegin() 必须和 cend() 比较，不要混用 end()（类型不同，虽然 deque 通常可隐式转换）",
+              "auto n = dq.cend() - dq.cbegin();\ncout << n; // 3"
+            ],
+            [
+              "auto rit = dq.rbegin();",
+              "rbegin()：返回反向迭代器，指向最后一个元素；O(1)。++rit 是向前（往头部）移动，常与 rend() 配对逆序输出；反向迭代器也可写",
+              "for (auto rit = dq.rbegin(); rit != dq.rend(); ++rit)\n    cout << *rit; // 3 2 1"
+            ],
+            [
+              "auto rit = dq.rend();",
+              "rend()：反向尾后迭代器，指向首元素之前，不可解引用；O(1)。与 rbegin() 构成逆序区间 [rbegin, rend)",
+              "auto cnt = dq.rend() - dq.rbegin();\ncout << cnt; // 3"
+            ],
+            [
+              "auto crit = dq.crbegin();",
+              "crbegin()：C++14 起提供，返回只读反向迭代器，指向最后一个元素；O(1)。语义 = const_reverse_iterator 版 rbegin()",
+              "for (auto it = dq.crbegin(); it != dq.crend(); ++it)\n    cout << *it;"
+            ],
+            [
+              "auto crit = dq.crend();",
+              "crend()：C++14 起提供，只读反向尾后迭代器；O(1)。与 crbegin() 配对，用于只读逆序遍历",
+              "auto n = dq.crend() - dq.crbegin();\ncout << n; // 3"
+            ]
+          ]
+        },
+        {
+          "name": "deque · 遍历（5 种写法）",
+          "items": [
+            [
+              "for (size_t i = 0; i < dq.size(); ++i)\n    cout << dq[i] << \" \";",
+              "下标遍历：deque 支持 O(1) 随机访问，可像数组一样用 []。索引用 size_t 与 size() 类型一致，避免 signed/unsigned 警告；需要修改时写 dq[i] = ...",
+              "deque<int> dq{10, 20, 30};\nfor (size_t i = 0; i < dq.size(); ++i)\n    cout << dq[i] << \" \"; // 10 20 30"
+            ],
+            [
+              "for (auto it = dq.begin(); it != dq.end(); ++it)\n    *it *= 2;",
+              "迭代器遍历（可写）：begin()/end() 是随机访问迭代器，支持 ++、+=、+n、it[n]。通过 *it 可直接改元素；循环条件用 != 而非 <，通用性更好",
+              "deque<int> dq{1, 2, 3};\nfor (auto it = dq.begin(); it != dq.end(); ++it)\n    *it *= 2; // {2,4,6}"
+            ],
+            [
+              "for (auto cit = dq.cbegin(); cit != dq.cend(); ++cit)\n    cout << *cit << \" \";",
+              "常量迭代器遍历（只读）：cbegin()/cend() 返回 const_iterator，*cit 只能读不能赋值；适合打印、求和、查找，能防止误改数据",
+              "deque<int> dq{1, 2, 3};\nfor (auto cit = dq.cbegin(); cit != dq.cend(); ++cit)\n    cout << *cit << \" \";"
+            ],
+            [
+              "for (auto rit = dq.rbegin(); rit != dq.rend(); ++rit)\n    cout << *rit << \" \";",
+              "反向迭代器遍历：rbegin() 指向末元素，++ 往头部走，输出逆序。deque 的反向迭代器同样是随机访问；注意此时 rit[0] 是最后一个元素",
+              "deque<int> dq{1, 2, 3};\nfor (auto rit = dq.rbegin(); rit != dq.rend(); ++rit)\n    cout << *rit << \" \"; // 3 2 1"
+            ],
+            [
+              "for (int& x : dq) x += 10;",
+              "C++11 范围 for（引用版可写）：int& 绑定到元素本身，修改会影响容器；只读时用 int x 或 const int& x 避免拷贝。底层就是 begin()/end() 的语法糖，遍历中不要插入删除",
+              "deque<int> dq{1, 2, 3};\nfor (int& x : dq) x += 10; // {11,12,13}\nfor (int x : dq) cout << x << \" \";"
+            ]
+          ]
+        },
+        {
+          "name": "deque · 容量与 resize",
+          "items": [
+            [
+              "cout << dq.empty();",
+              "empty()：判断是否无元素，O(1)，返回 bool。调用 front()/back()/pop_front()/pop_back() 前必须先 !empty()，否则是未定义行为。比写 size()==0 更语义化",
+              "deque<int> dq;\nif (dq.empty()) dq.push_back(1);"
+            ],
+            [
+              "cout << dq.size();",
+              "size()：返回当前元素个数（size_type，无符号），O(1)。下标合法范围是 [0, size()-1]；与 unsigned 混用时注意 -1 会变成很大的正数",
+              "deque<int> dq{1, 2, 3};\ncout << dq.size(); // 3"
+            ],
+            [
+              "cout << (dq.max_size() > 0);",
+              "max_size()：返回理论可容纳的最大元素数（受实现与系统限制），O(1)。只作容量上限参考，不要用它分配内存；实际可用内存通常远小于该值",
+              "deque<int> dq;\ncout << (dq.max_size() > 0); // 1"
+            ],
+            [
+              "dq.shrink_to_fit();",
+              "shrink_to_fit()：C++11，请求释放多余的空闲分段内存，非强制（实现可忽略），复杂度可达 O(n) 且可能使迭代器失效。deque 没有 reserve()，这是唯一相近的收缩手段",
+              "deque<int> dq(1000);\ndq.resize(3);\ndq.shrink_to_fit(); // 可能释放空闲块"
+            ],
+            [
+              "dq.resize(5);",
+              "resize(count)：把元素数改为 count。变大时末尾补值初始化元素（int 补 0），变小时截断尾部；O(|差值|)。头尾迭代器在扩容后可能失效，需重新取 begin()",
+              "deque<int> dq{1, 2, 3};\ndq.resize(5); // {1,2,3,0,0}\ndq.resize(2); // {1,2}"
+            ],
+            [
+              "dq.resize(7, 10);",
+              "resize(count, value)：扩容时新元素用 value 填充而非 0；缩容时 value 不起作用。O(|差值|)。这是 deque 预置初始值的常用写法，功能上替代 vector 的 assign/构造",
+              "deque<int> dq{1, 2, 3};\ndq.resize(7, 10); // {1,2,3,10,10,10,10}"
+            ]
+          ]
+        },
+        {
+          "name": "deque · 元素访问（4 个）",
+          "items": [
+            [
+              "cout << dq[2];",
+              "operator[]：按下标随机访问，O(1)，返回引用可读写。**不做越界检查**，下标 >= size() 是未定义行为；练习时先用 size() 确认范围",
+              "deque<int> dq{10, 20, 30};\ncout << dq[2]; // 30\ndq[2] = 300;"
+            ],
+            [
+              "cout << dq.at(2);",
+              "at(index)：带越界检查的随机访问，O(1)，越界抛 std::out_of_range（需 <stdexcept>）。比 [] 安全但略慢；竞赛里数据保证合法时常用 []",
+              "deque<int> dq{10, 20, 30};\ntry { cout << dq.at(9); }\ncatch (const out_of_range& e) { cout << \"bad\"; }"
+            ],
+            [
+              "cout << dq.front();",
+              "front()：返回首元素引用，O(1)，可读写。**空容器调用是未定义行为**；配合 pop_front() 可实现 FIFO 队列，这是 vector 没有的能力",
+              "deque<int> dq{10, 20};\nif (!dq.empty()) cout << dq.front(); // 10"
+            ],
+            [
+              "cout << dq.back();",
+              "back()：返回末元素引用，O(1)，可读写。**空容器调用是未定义行为**；配合 push_back()/pop_back() 可当栈用（如后缀表达式求值）",
+              "deque<int> dq{10, 20};\nif (!dq.empty()) cout << dq.back(); // 20"
+            ]
+          ]
+        },
+        {
+          "name": "deque · 双端插入与删除（6 个）",
+          "items": [
+            [
+              "dq.push_back(4);",
+              "push_back(val)：尾部追加一个元素（拷贝），均摊 O(1)。deque 尾部扩展不需搬移已有元素，这点优于 vector；参数可为 const T& 或 T&&",
+              "deque<int> dq{1, 2, 3};\ndq.push_back(4); // {1,2,3,4}"
+            ],
+            [
+              "dq.push_front(0);",
+              "push_front(val)：头部插入一个元素（拷贝），均摊 O(1)。**vector 没有此操作**（vector 头插是 O(n)），这正是选 deque 的首要理由",
+              "deque<int> dq{1, 2, 3};\ndq.push_front(0); // {0,1,2,3}"
+            ],
+            [
+              "dq.emplace_back(5);",
+              "emplace_back(args...)：C++11，尾部**就地构造**元素，参数直接传给元素构造函数，避免临时对象的一次拷贝/移动，均摊 O(1)。存自定义类型时比 push_back(T()) 更高效",
+              "deque<int> dq{1, 2, 3};\ndq.emplace_back(5); // {1,2,3,5}\ndeque<string> s; s.emplace_back(3, 'a'); // \"aaa\""
+            ],
+            [
+              "dq.emplace_front(-1);",
+              "emplace_front(args...)：C++11，头部就地构造，均摊 O(1)，语义与 push_front 相同但少一次临时对象。多参数构造（如 pair、string）优势明显",
+              "deque<int> dq{0, 1, 2};\ndq.emplace_front(-1); // {-1,0,1,2}"
+            ],
+            [
+              "dq.pop_back();",
+              "pop_back()：删除尾部元素，O(1)，**返回 void**（不返回被删元素，需先 back() 取值）。空容器调用是未定义行为；不影响 front 侧迭代器通常安全，但被删元素迭代器失效",
+              "deque<int> dq{1, 2, 3};\nif (!dq.empty()) dq.pop_back(); // {1,2}"
+            ],
+            [
+              "dq.pop_front();",
+              "pop_front()：删除头部元素，O(1)，**返回 void**，空容器调用未定义。与 push_back() 配合就是标准队列（BFS 常用）；vector 无此接口",
+              "deque<int> dq{1, 2, 3};\nif (!dq.empty()) dq.pop_front(); // {2,3}"
+            ]
+          ]
+        },
+        {
+          "name": "deque · insert 与 emplace（全重载）",
+          "items": [
+            [
+              "dq.insert(dq.begin() + 1, 25);",
+              "insert(pos, const T& value)：在 pos 之前插入一个拷贝，返回指向新元素的迭代器。复杂度 O(n)（与到两端距离较小者相关），中间插入/删除是 deque 的弱项；pos 必须是本容器的迭代器",
+              "deque<int> dq{10, 20, 30};\ndq.insert(dq.begin() + 1, 25); // {10,25,20,30}"
+            ],
+            [
+              "dq.insert(dq.begin() + 1, 2, 9);",
+              "insert(pos, count, value)：在 pos 前插入 count 个相同值，返回首个新元素迭代器；O(n + count)。注意参数顺序是 (位置, 个数, 值)，与构造的 (个数, 值) 不同",
+              "deque<int> dq{10, 20};\ndq.insert(dq.begin() + 1, 2, 9); // {10,9,9,20}"
+            ],
+            [
+              "dq.insert(dq.begin() + 1, v.begin(), v.end());",
+              "insert(pos, first, last)：把区间 [first, last) 插入到 pos 之前，返回首个新元素迭代器；O(n + 区间长度)。区间不能来自 dq 自身；可来自 vector、数组或其他 deque",
+              "vector<int> v{7, 8};\ndeque<int> dq{10, 20};\ndq.insert(dq.begin() + 1, v.begin(), v.end()); // {10,7,8,20}"
+            ],
+            [
+              "dq.insert(dq.begin() + 1, {7, 8});",
+              "insert(pos, initializer_list<T>)：C++11 重载，把花括号列表插到 pos 之前，返回首个新元素迭代器；O(n + 列表长度)。写法比先建临时容器再传区间更短",
+              "deque<int> dq{10, 20};\ndq.insert(dq.begin() + 1, {7, 8}); // {10,7,8,20}"
+            ],
+            [
+              "dq.insert(dq.begin() + 1, std::move(x));",
+              "insert(pos, T&& value)：C++11 右值重载，插入时移动而非拷贝，返回新元素迭代器；O(n)。对 string/vector 等重对象能省一次深拷贝；移动后 x 不应再按原值使用",
+              "deque<int> dq{10, 20};\nint x = 9;\ndq.insert(dq.begin() + 1, std::move(x));"
+            ],
+            [
+              "dq.emplace(dq.begin() + 1, 6);",
+              "emplace(pos, args...)：C++11，在 pos 之前就地构造一个元素，返回指向新元素的迭代器；O(n)。与 insert 的区别同 emplace_back / push_back：少一次临时对象构造",
+              "deque<string> dq{\"a\", \"b\"};\ndq.emplace(dq.begin() + 1, 3, 'z');\n// {\"a\",\"zzz\",\"b\"}"
+            ]
+          ]
+        },
+        {
+          "name": "deque · 删除清空与交换",
+          "items": [
+            [
+              "dq.erase(dq.begin() + 1);",
+              "erase(pos)：删除 pos 指向的单个元素，返回**下一个元素的迭代器**（可能是 end()）。O(n)；删除后原 pos 及之后的迭代器/引用可能失效，循环删除务必用返回值更新迭代器",
+              "deque<int> dq{10, 20, 30};\nauto it = dq.erase(dq.begin() + 1); // {10,30}, it 指向 30"
+            ],
+            [
+              "dq.erase(dq.begin(), dq.begin() + 2);",
+              "erase(first, last)：删除左闭右开区间 [first, last)，返回 last 之后元素的迭代器；O(n)。删除全部可写 dq.erase(dq.begin(), dq.end())，等价于 clear()",
+              "deque<int> dq{10, 20, 30, 40};\ndq.erase(dq.begin() + 1, dq.begin() + 3); // {10,40}"
+            ],
+            [
+              "dq.clear();",
+              "clear()：删除全部元素，size() 变 0，O(n)，返回 void。**不保证释放已分配内存**（如需回收可再 shrink_to_fit()）；所有迭代器、引用失效；空容器上调用安全",
+              "deque<int> dq{1, 2, 3};\ndq.clear();\ncout << dq.empty(); // 1"
+            ],
+            [
+              "dq.swap(b);",
+              "swap(deque& other)：成员函数，O(1) 交换两个 deque 的内部分段指针，元素不逐个搬移；要求类型与分配器相同。迭代器仍指向原来的元素，但归属的容器变了",
+              "deque<int> a{1, 2}, b{7, 8, 9};\na.swap(b); // a={7,8,9}, b={1,2}"
+            ],
+            [
+              "std::swap(dq, b);",
+              "std::swap(a, b)：非成员算法，<utility> 提供对 deque 的特化，内部调用 a.swap(b)，同样 O(1)。与成员函数等价，泛型代码里更常用；不要写成 std::swap(a.begin(), b.begin())",
+              "deque<int> a{1, 2}, b{7, 8, 9};\nstd::swap(a, b);\ncout << a.back(); // 9"
+            ]
+          ]
+        },
+        {
+          "name": "deque · 比较运算（6 个）",
+          "items": [
+            [
+              "cout << (a == b);",
+              "operator==：逐元素按字典序比较两个 deque，全部相等且长度相同才为 true；O(n)。C++20 起由 <=> 生成，但用法不变；元素类型需支持 ==",
+              "deque<int> a{1, 2, 3}, b{1, 2, 3};\ncout << (a == b); // 1"
+            ],
+            [
+              "cout << (a != b);",
+              "operator!=：== 的取反，长度不同或任一对应元素不同即为 true；O(n)。常用于断言/判重，比手写循环比较简洁",
+              "deque<int> a{1, 2, 3}, b{1, 2, 4};\ncout << (a != b); // 1"
+            ],
+            [
+              "cout << (a < b);",
+              "operator<：字典序比较，从首元素起找第一个不同元素比大小；若前缀完全相同则较短者更小。O(n)，元素需支持 <；可用于 deque 作 map 键或排序",
+              "deque<int> a{1, 2, 3}, b{1, 2, 4};\ncout << (a < b); // 1"
+            ],
+            [
+              "cout << (a <= b);",
+              "operator<=：等价于 !(b < a)，字典序非大于；O(n)。与 < 一样按元素逐个比较，不是比较长度或容量",
+              "deque<int> a{1, 2, 3}, b{1, 2, 3};\ncout << (a <= b); // 1"
+            ],
+            [
+              "cout << (a > b);",
+              "operator>：等价于 b < a，字典序大于；O(n)。注意 {1,9} > {1,2,3} 成立（第二个元素 9>2），与容器长度无关",
+              "deque<int> a{1, 9}, b{1, 2, 3};\ncout << (a > b); // 1"
+            ],
+            [
+              "cout << (a >= b);",
+              "operator>=：等价于 !(a < b)，字典序非小于；O(n)。C++20 中部分比较运算符由三路比较运算符 <=> 自动合成，但语义与此处一致",
+              "deque<int> a{1, 2, 4}, b{1, 2, 3};\ncout << (a >= b); // 1"
+            ]
+          ]
+        },
+        {
+          "name": "deque · C++20 补充",
+          "items": [
+            [
+              "std::erase(dq, 2);",
+              "std::erase(deque&, value)：C++20 新增**非成员**函数（定义于 <deque>），删除所有等于 value 的元素，返回删除个数（size_type）；O(n)。比手写 erase-remove 惯用法简洁，且对 deque 是就地删除",
+              "deque<int> dq{1, 2, 3, 2};\nauto n = std::erase(dq, 2);\n// dq={1,3}, n=2"
+            ],
+            [
+              "std::erase_if(dq, [](int x){ return x % 2 == 0; });",
+              "std::erase_if(deque&, pred)：C++20 新增，删除所有使谓词为 true 的元素，返回删除个数；O(n)。谓词接收 const T&，可写 lambda、函数对象；编译需 -std=c++20",
+              "deque<int> dq{1, 2, 3, 4};\nstd::erase_if(dq, [](int x){ return x % 2 == 0; });\n// dq={1,3}"
+            ]
+          ]
+        },
+        {
+          "name": "deque · 与 vector 对照 / 易错点",
+          "items": [
+            [
+              "// deque has no reserve(); use resize() to change size",
+              "与 vector 对照①：deque 分段存储，**没有 reserve()/capacity()**，不能预分配连续内存；改变元素个数用 resize() 或构造时指定个数。vector 有 reserve() 可避免扩容拷贝",
+              "deque<int> dq;\ndq.resize(5); // 合法\n// dq.reserve(5); // 编译错误"
+            ],
+            [
+              "// check empty() before front()/back()/pop_*",
+              "易错点①：空 deque 上调用 front()、back()、pop_front()、pop_back() 都是未定义行为（不抛异常）。pop 系列返回 void，取值要在删除前做；at() 才有越界异常",
+              "deque<int> dq;\nif (!dq.empty()) cout << dq.front();"
+            ],
+            [
+              "// emplace_back builds in place; cheaper than push_back",
+              "易错点②：push_back(T(...)) 会先构造临时对象再移动/拷贝；emplace_back(args...) 直接在目标位置构造。存 string、pair、自定义类时优先 emplace，int 这类标量差别可忽略",
+              "deque<string> d;\nd.emplace_back(3, 'x'); // \"xxx\""
+            ],
+            [
+              "// deque iterators are random access: + - [] work",
+              "易错点③：deque 迭代器是**随机访问迭代器**，支持 it + n、it - it2、it[n]、< 比较，可直接 dq.begin() + 3；list 只有双向迭代器，不能这样写",
+              "deque<int> dq{1, 2, 3, 4};\nauto it = dq.begin() + 2;\ncout << it[1]; // 4"
+            ],
+            [
+              "// segmented storage: worse cache locality than vector",
+              "与 vector 对照②：deque 分段连续，元素跨块时遍历缓存命中率低于 vector，随机访问也多一次块定位；但头尾增删 O(1) 且扩展不需整体搬移。频繁头尾操作选 deque，纯遍历/密集随机访问选 vector",
+              "// 头部插入: deque O(1) vs vector O(n)\n// 顺序遍历: vector 通常更快"
+            ],
+            [
+              "// middle insert/erase is O(n); prefer list for that",
+              "与 vector 对照③：deque 的中间 insert/erase 是 O(n)，且会使迭代器/引用失效；若业务就是频繁中间插入删除，应用 list（O(1) 插入，但失去随机访问）。另外 deque 扩容后迭代器也可能失效",
+              "// 只在两端增删 -> deque\n// 频繁中间增删 -> list"
+            ]
+          ]
+        },
+        {
+          "name": "deque · 实战完整程序",
+          "items": [
+            [
+              "#include <deque>\n#include <string>\n#include <iostream>\nusing namespace std;\nint main() {\n    deque<char> s1, s2;\n    char t;\n    while (cin >> t) {\n        if (t == ']') {\n            while (s1.back() != '[') {\n                s2.push_back(s1.back());\n                s1.pop_back();\n            }\n            s1.pop_back();\n            int d = 0;\n            string s, r;\n            while (s2.back() >= '0' && s2.back() <= '9') {\n                d *= 10;\n                d += s2.back() - '0';\n                s2.pop_back();\n            }\n            while (!s2.empty()) {\n                s.push_back(s2.back());\n                s2.pop_back();\n            }\n            for (int i = 0; i < d; i++) r += s;\n            for (char ch : r) s1.push_back(ch);\n        } else {\n            s1.push_back(t);\n        }\n    }\n    for (char ch : s1) cout << ch;\n    return 0;\n}",
+              "P1928 外星密码（洛谷，解压缩 [D X]）：用两个 deque 模拟栈。s1 存待展开字符，遇 ] 时把 [ 之前的内容倒进 s2，再分离「重复次数 D」与「子串 X」，展开 D 次后压回 s1。头尾 push/pop 全 O(1)，支持多重嵌套压缩；空串/边界需保证输入合法",
+              "输入 AC[3FUN] -> 输出 ACFUNFUNFUN\n输入 [2[2[2CB]]] -> 输出 CBCBCBCBCBCBCB"
+            ],
+            [
+              "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    deque<int> st;\n    string s;\n    cin >> s;\n    for (int i = 0; i < (int)s.size() - 1; i++) {\n        int d = 0;\n        while (s[i] >= '0' && s[i] <= '9') {\n            d *= 10;\n            d += s[i] - '0';\n            i++;\n        }\n        if (s[i] == '.') st.push_back(d);\n        if (s[i] == '+') {\n            int a = st.back(); st.pop_back();\n            int b = st.back(); st.pop_back();\n            st.push_back(b + a);\n        }\n        if (s[i] == '-') {\n            int a = st.back(); st.pop_back();\n            int b = st.back(); st.pop_back();\n            st.push_back(b - a);\n        }\n        if (s[i] == '*') {\n            int a = st.back(); st.pop_back();\n            int b = st.back(); st.pop_back();\n            st.push_back(b * a);\n        }\n        if (s[i] == '/') {\n            int a = st.back(); st.pop_back();\n            int b = st.back(); st.pop_back();\n            st.push_back(b / a);\n        }\n    }\n    cout << st.back() << endl;\n    return 0;\n}",
+              "P1449 后缀表达式：deque 当栈用。读到数字用 . 入栈 back()，读到运算符弹出两个操作数（先弹的是右操作数 a，再弹左操作数 b，故减法/除法要用 b-a、b/a），结果压回 back()。@ 是结束符，循环用 size()-1 跳过",
+              "输入 3.5.2.-*7.+@ -> 输出 16\n输入 10.28.30./*7.-@ -> 输出 -7"
+            ],
+            [
+              "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n;\n    cin >> n;\n    deque<int> st;\n    for (int i = 0; i < n; i++) {\n        int op;\n        cin >> op;\n        if (op == 0) {\n            int x;\n            cin >> x;\n            if (!st.empty()) st.push_back(max(x, st.back()));\n            else st.push_back(x);\n        }\n        if (op == 1) {\n            if (!st.empty()) st.pop_back();\n        }\n        if (op == 2) {\n            if (!st.empty()) cout << st.back() << endl;\n            else cout << 0 << endl;\n        }\n    }\n    return 0;\n}",
+              "P1165 日志分析：deque 存「到当前深度为止的最大重量」前缀最大值，实现 O(1) 查询全局最大。入库 push_back(max(x, back()))，出库 pop_back() 自动还原上一层最大值，查询直接 back()。空栈时出库忽略、查询输出 0；整体 O(N)，N 可达 2e5",
+              "输入 13\\n0 1\\n0 2\\n2\\n0 4\\n0 2\\n2\\n1\\n2\\n1\\n1\\n2\\n1\\n2\\n -> 输出 2/4/4/1/0"
+            ],
+            [
+              "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n, k;\n    cin >> n >> k;\n    vector<int> a(n);\n    for (int i = 0; i < n; i++) cin >> a[i];\n    deque<int> q;\n    for (int i = 0; i < n; i++) {\n        while (!q.empty() && a[q.back()] <= a[i]) q.pop_back();\n        q.push_back(i);\n        if (q.front() <= i - k) q.pop_front();\n        if (i >= k - 1) {\n            if (i > k - 1) cout << ' ';\n            cout << a[q.front()];\n        }\n    }\n    cout << endl;\n    return 0;\n}",
+              "单调队列（求每个长度 k 的滑动窗口最大值，自编示例）：deque 存**下标**并保证对应值从大到小。新元素入队前先从 back() 弹掉所有不大于它的值（它们不可能再成为最大），再 push_back(i)；若 front() 的下标 <= i-k 说明已滑出窗口，用 pop_front() 弹掉。每个下标最多进出一次，总 O(n)，是 deque 双端 O(1) 的经典应用；front() 即当前窗口最大值的下标",
+              "输入 6 3 / 1 3 2 5 4 6 -> 输出 3 5 5 6"
             ]
           ]
         },
