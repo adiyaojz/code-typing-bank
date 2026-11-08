@@ -14,6 +14,10 @@ const LS = {
   kbHeight: 'ct_kb_height_v1'
 };
 
+/* __DONE_MIGRATION_START__ */
+const DONE_MIGRATION = {"cpp":{"0":"基础高频","1":"数据类型与变量","2":"分支与循环","3":"分支与循环","4":"函数","5":"数组与 vector","6":"字符串操作","7":"STL容器接口","8":"vector 深入","9":"字符串操作","10":"algorithm 高频","11":"set 集合","12":"map 映射","13":"stack 栈","14":"queue 队列","15":"deque · 构造与赋值","16":"deque · 构造与赋值","17":"deque · 构造与赋值","18":"deque · 迭代器与遍历","19":"deque · 迭代器与遍历","20":"deque · 容量访问与修改","21":"deque · 容量访问与修改","22":"deque · 容量访问与修改","23":"deque · 容量访问与修改","24":"deque · 容量访问与修改","25":"deque · 容量访问与修改","26":"deque · 进阶与实战","27":"deque · 进阶与实战","28":"deque · 进阶与实战","29":"priority_queue 堆","30":"pair 对","31":"数据类型与变量","32":"输入输出","33":"运算符补充","34":"分支与循环","35":"数组与 vector","36":"程序结构与头文件","37":"程序结构与头文件","38":"函数","39":"指针入门","40":"结构体 struct","41":"类与对象入门","42":"常用库函数","43":"文件读写","44":"GESP输入输出实战","45":"常用库函数","46":"结构体 struct","47":"综合挑战","48":"二分查找模板","49":"前缀和与差分","50":"枚举与模拟","51":"素数与数学","52":"进制与位运算","53":"BFS / DFS 框架","54":"动态规划入门","55":"结构体与排序进阶","56":"字符串处理进阶","57":"GESP 易错点速记","58":"GESP 一级 · 程序框架与运算","59":"GESP 一级 · 条件与循环","60":"GESP 二级 · 嵌套与一维数组","61":"GESP 二级 · 字符与函数","62":"GESP 三级 · 数组排序与字符串","63":"GESP 三级 · 枚举模拟与递归","64":"GESP 四级 · 指针结构体与文件","65":"GESP 四级 · 递推二分与排序","66":"GESP 五级 · 高精度与 STL 容器","67":"GESP 五级 · 贪心数论与位运算","68":"GESP 六级 · 树图存储","69":"GESP 六级 · 搜索与动态规划","70":"GESP 七级 · 并查集堆与树状数组","71":"GESP 七级 · 最短路区间 DP 与哈希","72":"GESP 八级 · 组合计数与数论进阶","73":"GESP 八级 · 字符串算法与状压 DP","74":"小算法 · 完整程序（求和累加）","75":"GESP 一级 · 完整程序","76":"GESP 二级 · 完整程序","77":"GESP 三级 · 完整程序","78":"GESP 四级 · 完整程序","79":"GESP 五级 · 完整程序","80":"GESP 六级 · 完整程序","81":"GESP 七级 · 完整程序","82":"GESP 八级 · 完整程序","83":"真题 · 一级（CCF 官方 · 完整程序）","84":"真题 · 二级（CCF 官方 · 完整程序）","85":"真题 · 三级（CCF 官方 · 完整程序）"},"basic":{"0":"零基础 · 字母键位热身","1":"零基础 · 最短代码词","2":"零基础 · 高频代码词","3":"零基础 · 常见关键字","4":"零基础 · 变量名与命名","5":"零基础 · 数字与表达式"},"python":{"0":"基础高频","1":"逻辑与判断","2":"循环语句","3":"函数与作用域","4":"字符串方法","5":"列表与元组","6":"字典与集合","7":"文件读写","8":"标准库常用","9":"类型转换与输入","10":"运算符","11":"切片详解","12":"常用内置函数","13":"列表推导","14":"综合挑战","15":"GESP 一级 · 基础语句","16":"GESP 一级 · 分支与循环","17":"GESP 二级 · 字符串处理","18":"GESP 二级 · 列表进阶","19":"GESP 三级 · 函数与递归","20":"GESP 三级 · 字典与集合","21":"海龟绘图 turtle","22":"随机数与猜数游戏","23":"格式化输出 f-string","24":"文件读写","25":"类与对象入门","26":"Python 常用算法片段","27":"GESP 四级 · 列表元组与字典集合","28":"GESP 四级 · 函数递推与二分","29":"GESP 四级 · 文件读写与异常","30":"GESP 五级 · 递归与自定义排序","31":"GESP 五级 · 贪心枚举与数学模块","32":"GESP 五级 · 位运算与进制转换","33":"GESP 六级 · 搜索与图树表示","34":"GESP 六级 · 动态规划与记忆化","35":"GESP 七级 · 堆与哈希计数","36":"GESP 七级 · 区间 DP 与迭代器","37":"GESP 八级 · 组合枚举与数论","38":"GESP 八级 · Trie 状压与缓存","39":"小算法 · 完整程序（求和累加）","40":"GESP 一级 · 完整程序","41":"GESP 二级 · 完整程序","42":"GESP 三级 · 完整程序","43":"真题 · 一级（CCF 官方 · 完整程序）","44":"真题 · 二级（CCF 官方 · 完整程序）","45":"真题 · 三级（CCF 官方 · 完整程序）"},"c":{"0":"C 程序框架","1":"printf 输出","2":"scanf 输入","3":"数据类型与常量","4":"运算符","5":"分支结构","6":"循环结构","7":"数组与字符串","8":"函数与指针入门"},"arduino":{"0":"程序骨架","1":"数字 IO","2":"模拟 IO","3":"串口与调试","4":"常用传感器与库"},"scratch":{"0":"事件与流程 Events","1":"控制积木 Control","2":"外观与声音 Looks & Sound","3":"侦测与运算 Sensing & Operators","4":"运动与变量 Motion & Variables"},"symbols":{"0":"括号与配对","1":"标点与运算符","2":"代码骨架速打"}};
+/* __DONE_MIGRATION_END__ */
+
 /* ---------- 离线兜底题库（仅在完全取不到线上题库时使用） ---------- */
 const FALLBACK_BANK = {
   version: 0, updatedAt: null,
@@ -282,8 +286,33 @@ function setLang(k){
   renderLangTabs(); renderMenu(); applySettings();
 }
 
-function doneKey(){ return LS.done + '_' + (currentUser || 'guest'); }
-function getDone(){ try { return new Set(JSON.parse(localStorage.getItem(doneKey()) || '[]')); } catch(e){ return new Set(); } }
+// 完成标记按「语言_分组名」存储，分组增删/重排不会再错位。
+// 旧版是「语言_分组序号」，首次读取时按 DONE_MIGRATION 一次性迁移并清理旧键。
+function doneKey(){ return 'ct_done_v3_' + (currentUser || 'guest'); }
+function getDone(){
+  let s;
+  try { const v = JSON.parse(localStorage.getItem(doneKey()) || '[]'); s = new Set(Array.isArray(v) ? v : []); }
+  catch(e){ s = new Set(); }
+  const legacyKey = LS.done + '_' + (currentUser || 'guest');
+  let legacy = null;
+  try { legacy = localStorage.getItem(legacyKey); } catch(e){}
+  if (legacy) {
+    try {
+      const arr = JSON.parse(legacy) || [];
+      if (Array.isArray(arr)) for (const k of arr) {
+        if (typeof k !== 'string') continue;
+        const m = /^([a-z]+)_(\d+)$/.exec(k);
+        if (m) {
+          // 旧序号能映射才保留；映射不到的旧分组直接丢弃，避免留下永不匹配的脏键
+          if (DONE_MIGRATION[m[1]] && DONE_MIGRATION[m[1]][m[2]])
+            s.add(m[1] + '_' + DONE_MIGRATION[m[1]][m[2]]);
+        } else s.add(k);
+      }
+    } catch(e){}
+    try { localStorage.removeItem(legacyKey); save(doneKey(), [...s]); } catch(e){}
+  }
+  return s;
+}
 function markDone(key){ const s = getDone(); s.add(key); save(doneKey(), [...s]); }
 
 function renderMenu(){
@@ -294,7 +323,7 @@ function renderMenu(){
   const done = getDone();
   $('mGroups').textContent = groups.length;
   $('mWords').textContent = total;
-  $('mDone').textContent = groups.filter((_,i) => done.has(L.key + '_' + i)).length + ' / ' + groups.length;
+  $('mDone').textContent = groups.filter(g => done.has(L.key + '_' + g.name)).length + ' / ' + groups.length;
   $('mRound').textContent = settings.round >= 999 ? '全部' : '随机 ' + settings.round + ' 项';
 
   const kw = $('search').value.trim().toLowerCase();
@@ -303,7 +332,7 @@ function renderMenu(){
   groups.forEach((g, i) => {
     if (kw && g.name.toLowerCase().indexOf(kw) < 0) return;
     shown++;
-    const isDone = done.has(L.key + '_' + i);
+    const isDone = done.has(L.key + '_' + g.name);
     const cjk = g.items.filter(x => x.cjk).length;
     const card = document.createElement('div');
     card.className = 'mod';
@@ -359,7 +388,7 @@ function startModule(i){
   queue = (settings.round >= 999 && !isProgram) ? queue : queue.slice(0, Math.min(limit, queue.length));
   curMod = i; itemIdx = 0;
   mode = 'normal';
-  roundMeta = { title: g.name, lang: curLang().key, mod: i };
+  roundMeta = { title: g.name, lang: curLang().key, mod: g.name };
   correctKeys = 0; mistakes = 0; roundWrong = {}; roundWrongItems = {}; roundRedone = false;
   startTs = null; clearInterval(timerId);
   stopChallengeTimers();

@@ -1,6 +1,6 @@
 {
-  "version": 10,
-  "updatedAt": "2026-11-08T10:34:44.922Z",
+  "version": 11,
+  "updatedAt": "2026-11-08T11:02:32.295Z",
   "langs": {
     "cpp": {
       "label": "C++",
@@ -144,11 +144,46 @@
               "const int N = 100;",
               "常量：定义后不能再改",
               "const int N = 100;\nint arr[N];"
+            ],
+            [
+              "int a = 10;",
+              "整型，存整数（约 ±21 亿）",
+              "int a = 10;"
+            ],
+            [
+              "long long b = 1e18;",
+              "长整型：数据大时必用，别爆 int",
+              "long long b = 1000000000000LL;"
+            ],
+            [
+              "double pi = 3.14;",
+              "双精度小数",
+              "double r = 2.5;"
+            ],
+            [
+              "char c = 'A';",
+              "单个字符，用单引号",
+              "char c = 'A';"
+            ],
+            [
+              "bool ok = true;",
+              "布尔：只有 true / false",
+              "bool ok = false;"
+            ],
+            [
+              "const int N = 100;",
+              "常量：定义后不能再改",
+              "const int N = 105;"
+            ],
+            [
+              "auto x = 10;",
+              "自动推断类型（C++11 起）",
+              "auto v = vector<int>();"
             ]
           ]
         },
         {
-          "name": "逻辑判断",
+          "name": "分支与循环",
           "items": [
             [
               "if (a > b) {",
@@ -184,12 +219,7 @@
               "||",
               "逻辑或：一边为真就为真",
               "if (day == 6 || day == 7) {}"
-            ]
-          ]
-        },
-        {
-          "name": "循环语句",
-          "items": [
+            ],
             [
               "for (int i = 0; i < 5; i++) {",
               "三段式 for：初始化；条件；每轮后 i++",
@@ -214,6 +244,36 @@
               "continue;",
               "跳过本轮，进入下一次",
               "for (int i = 0; i < 5; i++) {\n    if (i == 2) continue;\n    cout << i; }"
+            ],
+            [
+              "switch (n) {",
+              "多分支：按 n 的值跳到对应 case",
+              "switch (n) {\ncase 1:\n    cout << 1;\n    break;\ndefault:\n    cout << 0;\n}"
+            ],
+            [
+              "case 1:",
+              "switch 的一个分支，别忘写 break",
+              "case 1: cout << 1; break;"
+            ],
+            [
+              "default:",
+              "switch 的兜底分支（可不写）",
+              "default: cout << 0;"
+            ],
+            [
+              "do { } while (n > 0);",
+              "先执行一次再判断条件",
+              "int n = 3;\ndo {\n    cout << n;\n    n--;\n} while (n > 0);"
+            ],
+            [
+              "break;",
+              "跳出当前循环",
+              "for (int i=0;i<10;i++)\n    if (i==5) break;"
+            ],
+            [
+              "continue;",
+              "跳过本次循环",
+              "for (int i=0;i<5;i++)\n    if (i==2) continue;"
             ]
           ]
         },
@@ -239,6 +299,31 @@
               "int x = add(1, 2);",
               "调用函数并接收返回值",
               "int x = add(3, 4);\ncout << x;"
+            ],
+            [
+              "int add(int a, int b)",
+              "定义函数：返回值类型 + 函数名 + 参数列表",
+              "int add(int a, int b) {\n    return a + b;\n}"
+            ],
+            [
+              "void say() {",
+              "void 表示函数没有返回值",
+              "void say() {\n    cout << \"hi\";\n}"
+            ],
+            [
+              "int f(int n = 10)",
+              "默认参数：调用时不传就用 10",
+              "int f(int n = 10) {\n    return n;\n}"
+            ],
+            [
+              "void swap(int &a, int &b)",
+              "加 & 是引用传递，函数内能改到外面的变量",
+              "void swap(int &a, int &b) {\n    int t = a; a = b; b = t;\n}"
+            ],
+            [
+              "int max(int a, int b)",
+              "函数重载：同名函数靠参数个数区分",
+              "int max(int a, int b) { return a > b ? a : b; }"
             ]
           ]
         },
@@ -274,6 +359,31 @@
               "sort(v.begin(), v.end());",
               "给 vector 排序（需 algorithm）",
               "sort(v.begin(), v.end());"
+            ],
+            [
+              "int a[10];",
+              "定义 10 个 int 的数组，下标 0~9",
+              "int a[10];"
+            ],
+            [
+              "int a[5] = {1, 2, 3};",
+              "定义并初始化，后面补 0",
+              "int a[5] = {1,2,3};"
+            ],
+            [
+              "int a[5] = {0};",
+              "全部清零",
+              "int a[5] = {0};"
+            ],
+            [
+              "a[0] = 100;",
+              "给某个位置赋值",
+              "a[0] = 100;"
+            ],
+            [
+              "for (int i = 0; i < n; i++)",
+              "遍历数组标准写法",
+              "for (int i = 0; i < n; i++)\n    cin >> a[i];"
             ]
           ]
         },
@@ -314,6 +424,46 @@
               "s.empty()",
               "字符串是否为空，空则返回 true",
               "if (s.empty()) cout << \"空\";"
+            ],
+            [
+              "s += \" world\";",
+              "尾部拼接字符串，最常用",
+              "string s = \"hello\";\ns += \" world\";"
+            ],
+            [
+              "s.pop_back();",
+              "删掉最后一个字符",
+              "s.pop_back();"
+            ],
+            [
+              "s.erase(0, 6);",
+              "从下标 0 起删 6 个字符",
+              "s.erase(0, 6);"
+            ],
+            [
+              "if (p != string::npos)",
+              "find 找不到时返回 npos，必须判断",
+              "size_t p = s.find(\"ab\");\nif (p != string::npos) cout << p;"
+            ],
+            [
+              "stoi(s)",
+              "字符串转 int",
+              "int x = stoi(\"123\");"
+            ],
+            [
+              "to_string(x)",
+              "数字转字符串",
+              "string t = to_string(456);"
+            ],
+            [
+              "cnt[c - 'a']++",
+              "字符转下标：a→0，桶计数常用",
+              "int cnt[26] = {0};\nfor (char c : s) cnt[c - 'a']++;"
+            ],
+            [
+              "(char)tolower(c)",
+              "字符转小写（cctype 头文件）",
+              "cout << (char)tolower('A');"
             ]
           ]
         },
@@ -439,51 +589,6 @@
               "int mx = *max_element(v.begin(), v.end());",
               "求 vector 最大值，别忘了前面的 *",
               "int mx = *max_element(v.begin(), v.end());"
-            ]
-          ]
-        },
-        {
-          "name": "string 深入",
-          "items": [
-            [
-              "s += \" world\";",
-              "尾部拼接字符串，最常用",
-              "string s = \"hello\";\ns += \" world\";"
-            ],
-            [
-              "s.pop_back();",
-              "删掉最后一个字符",
-              "s.pop_back();"
-            ],
-            [
-              "s.erase(0, 6);",
-              "从下标 0 起删 6 个字符",
-              "s.erase(0, 6);"
-            ],
-            [
-              "if (p != string::npos)",
-              "find 找不到时返回 npos，必须判断",
-              "size_t p = s.find(\"ab\");\nif (p != string::npos) cout << p;"
-            ],
-            [
-              "stoi(s)",
-              "字符串转 int",
-              "int x = stoi(\"123\");"
-            ],
-            [
-              "to_string(x)",
-              "数字转字符串",
-              "string t = to_string(456);"
-            ],
-            [
-              "cnt[c - 'a']++",
-              "字符转下标：a→0，桶计数常用",
-              "int cnt[26] = {0};\nfor (char c : s) cnt[c - 'a']++;"
-            ],
-            [
-              "(char)tolower(c)",
-              "字符转小写（cctype 头文件）",
-              "cout << (char)tolower('A');"
             ]
           ]
         },
@@ -703,7 +808,7 @@
           ]
         },
         {
-          "name": "deque · 前置准备与特性",
+          "name": "deque · 构造与赋值",
           "items": [
             [
               "#include <deque>",
@@ -719,12 +824,7 @@
               "// deque: O(1) push/pop at both ends, O(1) random access",
               "核心特性速记：push_front / push_back / pop_front / pop_back 都是 O(1)；operator[] 与 at() 也是 O(1)，但比 vector 略慢（需先定位分段）；内存按块扩展，不需整体搬移",
               "deque<int> dq{1, 2, 3};\ndq.push_front(0);\ndq.push_back(4);\n// {0,1,2,3,4}"
-            ]
-          ]
-        },
-        {
-          "name": "deque · 初始化（8 种构造）",
-          "items": [
+            ],
             [
               "deque<int> dq1;",
               "默认构造：空 deque，size()==0。分配器默认，可随后 push/assign。注意此时 front()、back()、pop 都是未定义行为，必须先判 empty()",
@@ -764,12 +864,7 @@
               "deque<int> dq8(std::move(dq7));",
               "C++11 移动构造：O(1) 接管源容器的分段内存，不逐元素拷贝。移动后 dq7 变为有效但未指定状态，通常为空，不要再用它的旧值；适合函数返回大 deque",
               "deque<int> a{1, 2, 3};\ndeque<int> b(std::move(a));\n// b={1,2,3}, a 通常为空"
-            ]
-          ]
-        },
-        {
-          "name": "deque · 赋值与 assign",
-          "items": [
+            ],
             [
               "d2 = dq;",
               "拷贝赋值 operator=(const deque&)：清空 d2 原有内容并复制 dq 的全部元素，O(n)。赋值后两容器独立；自赋值 d=d 是安全的",
@@ -808,7 +903,7 @@
           ]
         },
         {
-          "name": "deque · 迭代器（8 个）",
+          "name": "deque · 迭代器与遍历",
           "items": [
             [
               "auto it = dq.begin();",
@@ -849,12 +944,7 @@
               "auto crit = dq.crend();",
               "crend()：C++14 起提供，只读反向尾后迭代器；O(1)。与 crbegin() 配对，用于只读逆序遍历",
               "auto n = dq.crend() - dq.crbegin();\ncout << n; // 3"
-            ]
-          ]
-        },
-        {
-          "name": "deque · 遍历（5 种写法）",
-          "items": [
+            ],
             [
               "for (size_t i = 0; i < dq.size(); ++i)\n    cout << dq[i] << \" \";",
               "下标遍历：deque 支持 O(1) 随机访问，可像数组一样用 []。索引用 size_t 与 size() 类型一致，避免 signed/unsigned 警告；需要修改时写 dq[i] = ...",
@@ -883,7 +973,7 @@
           ]
         },
         {
-          "name": "deque · 容量与 resize",
+          "name": "deque · 容量访问与修改",
           "items": [
             [
               "cout << dq.empty();",
@@ -914,12 +1004,7 @@
               "dq.resize(7, 10);",
               "resize(count, value)：扩容时新元素用 value 填充而非 0；缩容时 value 不起作用。O(|差值|)。这是 deque 预置初始值的常用写法，功能上替代 vector 的 assign/构造",
               "deque<int> dq{1, 2, 3};\ndq.resize(7, 10); // {1,2,3,10,10,10,10}"
-            ]
-          ]
-        },
-        {
-          "name": "deque · 元素访问（4 个）",
-          "items": [
+            ],
             [
               "cout << dq[2];",
               "operator[]：按下标随机访问，O(1)，返回引用可读写。**不做越界检查**，下标 >= size() 是未定义行为；练习时先用 size() 确认范围",
@@ -939,12 +1024,7 @@
               "cout << dq.back();",
               "back()：返回末元素引用，O(1)，可读写。**空容器调用是未定义行为**；配合 push_back()/pop_back() 可当栈用（如后缀表达式求值）",
               "deque<int> dq{10, 20};\nif (!dq.empty()) cout << dq.back(); // 20"
-            ]
-          ]
-        },
-        {
-          "name": "deque · 双端插入与删除（6 个）",
-          "items": [
+            ],
             [
               "dq.push_back(4);",
               "push_back(val)：尾部追加一个元素（拷贝），均摊 O(1)。deque 尾部扩展不需搬移已有元素，这点优于 vector；参数可为 const T& 或 T&&",
@@ -974,12 +1054,7 @@
               "dq.pop_front();",
               "pop_front()：删除头部元素，O(1)，**返回 void**，空容器调用未定义。与 push_back() 配合就是标准队列（BFS 常用）；vector 无此接口",
               "deque<int> dq{1, 2, 3};\nif (!dq.empty()) dq.pop_front(); // {2,3}"
-            ]
-          ]
-        },
-        {
-          "name": "deque · insert 与 emplace（全重载）",
-          "items": [
+            ],
             [
               "dq.insert(dq.begin() + 1, 25);",
               "insert(pos, const T& value)：在 pos 之前插入一个拷贝，返回指向新元素的迭代器。复杂度 O(n)（与到两端距离较小者相关），中间插入/删除是 deque 的弱项；pos 必须是本容器的迭代器",
@@ -1009,12 +1084,7 @@
               "dq.emplace(dq.begin() + 1, 6);",
               "emplace(pos, args...)：C++11，在 pos 之前就地构造一个元素，返回指向新元素的迭代器；O(n)。与 insert 的区别同 emplace_back / push_back：少一次临时对象构造",
               "deque<string> dq{\"a\", \"b\"};\ndq.emplace(dq.begin() + 1, 3, 'z');\n// {\"a\",\"zzz\",\"b\"}"
-            ]
-          ]
-        },
-        {
-          "name": "deque · 删除清空与交换",
-          "items": [
+            ],
             [
               "dq.erase(dq.begin() + 1);",
               "erase(pos)：删除 pos 指向的单个元素，返回**下一个元素的迭代器**（可能是 end()）。O(n)；删除后原 pos 及之后的迭代器/引用可能失效，循环删除务必用返回值更新迭代器",
@@ -1039,12 +1109,7 @@
               "std::swap(dq, b);",
               "std::swap(a, b)：非成员算法，<utility> 提供对 deque 的特化，内部调用 a.swap(b)，同样 O(1)。与成员函数等价，泛型代码里更常用；不要写成 std::swap(a.begin(), b.begin())",
               "deque<int> a{1, 2}, b{7, 8, 9};\nstd::swap(a, b);\ncout << a.back(); // 9"
-            ]
-          ]
-        },
-        {
-          "name": "deque · 比较运算（6 个）",
-          "items": [
+            ],
             [
               "cout << (a == b);",
               "operator==：逐元素按字典序比较两个 deque，全部相等且长度相同才为 true；O(n)。C++20 起由 <=> 生成，但用法不变；元素类型需支持 ==",
@@ -1078,7 +1143,7 @@
           ]
         },
         {
-          "name": "deque · C++20 补充",
+          "name": "deque · 进阶与实战",
           "items": [
             [
               "std::erase(dq, 2);",
@@ -1089,12 +1154,7 @@
               "std::erase_if(dq, [](int x){ return x % 2 == 0; });",
               "std::erase_if(deque&, pred)：C++20 新增，删除所有使谓词为 true 的元素，返回删除个数；O(n)。谓词接收 const T&，可写 lambda、函数对象；编译需 -std=c++20",
               "deque<int> dq{1, 2, 3, 4};\nstd::erase_if(dq, [](int x){ return x % 2 == 0; });\n// dq={1,3}"
-            ]
-          ]
-        },
-        {
-          "name": "deque · 与 vector 对照 / 易错点",
-          "items": [
+            ],
             [
               "// deque has no reserve(); use resize() to change size",
               "与 vector 对照①：deque 分段存储，**没有 reserve()/capacity()**，不能预分配连续内存；改变元素个数用 resize() 或构造时指定个数。vector 有 reserve() 可避免扩容拷贝",
@@ -1124,12 +1184,7 @@
               "// middle insert/erase is O(n); prefer list for that",
               "与 vector 对照③：deque 的中间 insert/erase 是 O(n)，且会使迭代器/引用失效；若业务就是频繁中间插入删除，应用 list（O(1) 插入，但失去随机访问）。另外 deque 扩容后迭代器也可能失效",
               "// 只在两端增删 -> deque\n// 频繁中间增删 -> list"
-            ]
-          ]
-        },
-        {
-          "name": "deque · 实战完整程序",
-          "items": [
+            ],
             [
               "#include <deque>\n#include <string>\n#include <iostream>\nusing namespace std;\nint main() {\n    deque<char> s1, s2;\n    char t;\n    while (cin >> t) {\n        if (t == ']') {\n            while (s1.back() != '[') {\n                s2.push_back(s1.back());\n                s1.pop_back();\n            }\n            s1.pop_back();\n            int d = 0;\n            string s, r;\n            while (s2.back() >= '0' && s2.back() <= '9') {\n                d *= 10;\n                d += s2.back() - '0';\n                s2.pop_back();\n            }\n            while (!s2.empty()) {\n                s.push_back(s2.back());\n                s2.pop_back();\n            }\n            for (int i = 0; i < d; i++) r += s;\n            for (char ch : r) s1.push_back(ch);\n        } else {\n            s1.push_back(t);\n        }\n    }\n    for (char ch : s1) cout << ch;\n    return 0;\n}",
               "P1928 外星密码（洛谷，解压缩 [D X]）：用两个 deque 模拟栈。s1 存待展开字符，遇 ] 时把 [ 之前的内容倒进 s2，再分离「重复次数 D」与「子串 X」，展开 D 次后压回 s1。头尾 push/pop 全 O(1)，支持多重嵌套压缩；空串/边界需保证输入合法",
@@ -1213,46 +1268,6 @@
           ]
         },
         {
-          "name": "基础数据类型",
-          "items": [
-            [
-              "int a = 10;",
-              "整型，存整数（约 ±21 亿）",
-              "int a = 10;"
-            ],
-            [
-              "long long b = 1e18;",
-              "长整型：数据大时必用，别爆 int",
-              "long long b = 1000000000000LL;"
-            ],
-            [
-              "double pi = 3.14;",
-              "双精度小数",
-              "double r = 2.5;"
-            ],
-            [
-              "char c = 'A';",
-              "单个字符，用单引号",
-              "char c = 'A';"
-            ],
-            [
-              "bool ok = true;",
-              "布尔：只有 true / false",
-              "bool ok = false;"
-            ],
-            [
-              "const int N = 100;",
-              "常量：定义后不能再改",
-              "const int N = 105;"
-            ],
-            [
-              "auto x = 10;",
-              "自动推断类型（C++11 起）",
-              "auto v = vector<int>();"
-            ]
-          ]
-        },
-        {
           "name": "输入输出",
           "items": [
             [
@@ -1328,71 +1343,6 @@
           ]
         },
         {
-          "name": "分支与循环补充",
-          "items": [
-            [
-              "switch (n) {",
-              "多分支：按 n 的值跳到对应 case",
-              "switch (n) {\ncase 1:\n    cout << 1;\n    break;\ndefault:\n    cout << 0;\n}"
-            ],
-            [
-              "case 1:",
-              "switch 的一个分支，别忘写 break",
-              "case 1: cout << 1; break;"
-            ],
-            [
-              "default:",
-              "switch 的兜底分支（可不写）",
-              "default: cout << 0;"
-            ],
-            [
-              "do { } while (n > 0);",
-              "先执行一次再判断条件",
-              "int n = 3;\ndo {\n    cout << n;\n    n--;\n} while (n > 0);"
-            ],
-            [
-              "break;",
-              "跳出当前循环",
-              "for (int i=0;i<10;i++)\n    if (i==5) break;"
-            ],
-            [
-              "continue;",
-              "跳过本次循环",
-              "for (int i=0;i<5;i++)\n    if (i==2) continue;"
-            ]
-          ]
-        },
-        {
-          "name": "一维数组",
-          "items": [
-            [
-              "int a[10];",
-              "定义 10 个 int 的数组，下标 0~9",
-              "int a[10];"
-            ],
-            [
-              "int a[5] = {1, 2, 3};",
-              "定义并初始化，后面补 0",
-              "int a[5] = {1,2,3};"
-            ],
-            [
-              "int a[5] = {0};",
-              "全部清零",
-              "int a[5] = {0};"
-            ],
-            [
-              "a[0] = 100;",
-              "给某个位置赋值",
-              "a[0] = 100;"
-            ],
-            [
-              "for (int i = 0; i < n; i++)",
-              "遍历数组标准写法",
-              "for (int i = 0; i < n; i++)\n    cin >> a[i];"
-            ]
-          ]
-        },
-        {
           "name": "程序结构与头文件",
           "items": [
             [
@@ -1424,12 +1374,7 @@
               "{ }",
               "一对花括号包起来的是一个代码块",
               "if (x > 0) {\n    cout << \"正\";\n}"
-            ]
-          ]
-        },
-        {
-          "name": "命名空间",
-          "items": [
+            ],
             [
               "namespace my {",
               "定义自己的命名空间，避免名字冲突",
@@ -1444,36 +1389,6 @@
               "std::cout",
               "不写 using 时，cout 前面要加 std::",
               "std::cout << \"hi\";"
-            ]
-          ]
-        },
-        {
-          "name": "函数进阶",
-          "items": [
-            [
-              "int add(int a, int b)",
-              "定义函数：返回值类型 + 函数名 + 参数列表",
-              "int add(int a, int b) {\n    return a + b;\n}"
-            ],
-            [
-              "void say() {",
-              "void 表示函数没有返回值",
-              "void say() {\n    cout << \"hi\";\n}"
-            ],
-            [
-              "int f(int n = 10)",
-              "默认参数：调用时不传就用 10",
-              "int f(int n = 10) {\n    return n;\n}"
-            ],
-            [
-              "void swap(int &a, int &b)",
-              "加 & 是引用传递，函数内能改到外面的变量",
-              "void swap(int &a, int &b) {\n    int t = a; a = b; b = t;\n}"
-            ],
-            [
-              "int max(int a, int b)",
-              "函数重载：同名函数靠参数个数区分",
-              "int max(int a, int b) { return a > b ? a : b; }"
             ]
           ]
         },
@@ -1524,6 +1439,26 @@
               "cout << s.score",
               "结构体成员可以直接读写",
               "cout << s.name << s.score;"
+            ],
+            [
+              "struct Point { int x; int y; };",
+              "自定义复合类型，打包多个变量",
+              "struct Point {\n    int x, y;\n};\nPoint p; p.x = 3;"
+            ],
+            [
+              "cout << fixed << setprecision(2);",
+              "小数固定输出 2 位（需 iomanip）",
+              "double pi = 3.14159;\ncout << fixed << setprecision(2) << pi;"
+            ],
+            [
+              "int n; cin >> n;",
+              "经典读入写法：先定义再读",
+              "int n;\ncin >> n;"
+            ],
+            [
+              "cout << arr[i] << \" \";",
+              "循环输出数组元素，空格隔开",
+              "for (int i = 0; i < n; i++)\n    cout << arr[i] << \" \";"
             ]
           ]
         },
@@ -1558,7 +1493,7 @@
           ]
         },
         {
-          "name": "cmath 数学函数",
+          "name": "常用库函数",
           "items": [
             [
               "#include <cmath>",
@@ -1594,6 +1529,36 @@
               "round(2.5)",
               "四舍五入",
               "cout << round(2.5);   // 3"
+            ],
+            [
+              "max(a, b)",
+              "返回较大的那个数",
+              "cout << max(3, 7);   // 7"
+            ],
+            [
+              "min(a, b)",
+              "返回较小的那个数",
+              "cout << min(3, 7);   // 3"
+            ],
+            [
+              "swap(a, b)",
+              "交换两个变量的值",
+              "int a = 1, b = 2;\nswap(a, b);"
+            ],
+            [
+              "abs(-5)",
+              "求绝对值",
+              "cout << abs(-5);   // 5"
+            ],
+            [
+              "sqrt(16)",
+              "求平方根（需 cmath）",
+              "cout << sqrt(16);   // 4"
+            ],
+            [
+              "sort(arr, arr + n);",
+              "给普通数组排序",
+              "int arr[5];\nsort(arr, arr + 5);"
             ]
           ]
         },
@@ -1729,66 +1694,6 @@
               "return 0;",
               "主函数最后写一句，程序正常结束",
               "int main() {\n    // ...\n    return 0;\n}"
-            ]
-          ]
-        },
-        {
-          "name": "常用库函数",
-          "items": [
-            [
-              "max(a, b)",
-              "返回较大的那个数",
-              "cout << max(3, 7);   // 7"
-            ],
-            [
-              "min(a, b)",
-              "返回较小的那个数",
-              "cout << min(3, 7);   // 3"
-            ],
-            [
-              "swap(a, b)",
-              "交换两个变量的值",
-              "int a = 1, b = 2;\nswap(a, b);"
-            ],
-            [
-              "abs(-5)",
-              "求绝对值",
-              "cout << abs(-5);   // 5"
-            ],
-            [
-              "sqrt(16)",
-              "求平方根（需 cmath）",
-              "cout << sqrt(16);   // 4"
-            ],
-            [
-              "sort(arr, arr + n);",
-              "给普通数组排序",
-              "int arr[5];\nsort(arr, arr + 5);"
-            ]
-          ]
-        },
-        {
-          "name": "结构体与输入输出",
-          "items": [
-            [
-              "struct Point { int x; int y; };",
-              "自定义复合类型，打包多个变量",
-              "struct Point {\n    int x, y;\n};\nPoint p; p.x = 3;"
-            ],
-            [
-              "cout << fixed << setprecision(2);",
-              "小数固定输出 2 位（需 iomanip）",
-              "double pi = 3.14159;\ncout << fixed << setprecision(2) << pi;"
-            ],
-            [
-              "int n; cin >> n;",
-              "经典读入写法：先定义再读",
-              "int n;\ncin >> n;"
-            ],
-            [
-              "cout << arr[i] << \" \";",
-              "循环输出数组元素，空格隔开",
-              "for (int i = 0; i < n; i++)\n    cout << arr[i] << \" \";"
             ]
           ]
         },
@@ -3741,6 +3646,81 @@
               "来源 gesp.ccf.org.cn 官方试卷 · 输入 sdfd 55 55     99312 → 输出 sdfd / 55 55 / 99312 · 完整代码逐行照敲"
             ]
           ]
+        },
+        {
+          "name": "真题 · 四级（CCF 官方 · 完整程序）",
+          "items": [
+            [
+              "#include <iostream>\nusing namespace std;\nint a[1010][1010];\nint main(){\nint M, N, H;\ncin >> M >> N >> H;\nfor (int i = 1; i <= M; ++i) {\nfor (int j = 1; j <= N; ++j) {\ncin >> a[i][j];\n}\n}\nint max_sum = 0;\nfor (int i = 1; i <= M - 2; ++i) {\nfor (int j = 1; j <= N - 2; ++j) {\nint local_max = a[i][j], local_min = a[i][j], local_sum = 0;\nfor (int x = 0; x < 3; ++x) {\nfor (int y = 0; y < 3; ++y) {\nint height = a[i + x][j + y];\nlocal_sum += height;\nif (height > local_max) local_max = height;\nif (height < local_min) local_min = height;\n}\n}\nif (local_max - local_min <= H) {\nif (local_sum > max_sum) {\nmax_sum = local_sum;\n}\n}\n}\n}\ncout << max_sum;\nreturn 0;\n}",
+              "2025.12 四级 编程题 1《建造》 · CCF 官方真题参考程序",
+              "来源 gesp.ccf.org.cn 官方试卷 · 输入 5 5 3 / 5 5 5 5 5 / 5 1 5 1 5 → 输出 40 · 完整代码逐行照敲"
+            ],
+            [
+              "#include <iostream>\n#include <algorithm>\n#include <string>\n#include <map>\n#include <assert.h>\nusing namespace std;\nstruct Item {\nstring name;\nint price;\nint priority;\n};\nbool cmp(const Item &a, const Item &b) {\nif (a.priority != b.priority) return a.priority < b.priority;\nif(a.price != b.price) return a.price < b.price;\nreturn a.name < b.name;\n}\nstring s[1005];\nstd::map<string, int> mp;\nint main(){\nint M, N;\ncin >> M >> N;\nItem items[N];\nfor (int i = 0; i < N; ++i) {\ncin >> items[i].name >> items[i].price >> items[i].priority;\nassert(mp.find(items[i].name) == mp.end());\nmp[items[i].name] = items[i].priority;\n}\nsort(items, items + N, cmp);\nint budget = M;\nint count = 0;\nfor (int i = 0; i < N; ++i) {\nif (items[i].price <= budget) {\nbudget -= items[i].price;\ns[count++] = items[i].name;\n}\n}\nsort(s, s + count);\nfor (int i = 0; i < count; ++i) {\ncout << s[i] << endl;\n}\nreturn 0;\n}",
+              "2025.12 四级 编程题 2《优先购买》 · CCF 官方真题参考程序",
+              "来源 gesp.ccf.org.cn 官方试卷 · 输入 20 4 / apple 6 8 / bus 15 1 → 输出 bus / cab / water · 完整代码逐行照敲"
+            ]
+          ]
+        },
+        {
+          "name": "真题 · 五级（CCF 官方 · 完整程序）",
+          "items": [
+            [
+              "#include <iostream>\nusing namespace std;\nconst int N = 100010;\nint a[N];\nint b[N];\nint pos;\nint main(){\nint n;\ncin >> n;\nfor(int i = 0; i < n; i++){\ncin >> a[i];\n}\nint left = 1, right = 1e6, ans = 1e6;\nwhile(left <= right){\nint mid = (left + right) / 2;\nbool possible = true;\npos = 0;\nfor(int i = 0; i < n; i++){\nif(a[i]>mid){\nb[pos++]=a[i];\n}\n}\nfor(int i = 0; i < pos; i += 2){\nif(b[i]!=b[i+1]){\npossible = false;\nbreak;\n}\n}\nif(possible){\nans = mid;\nright = mid - 1;\n} else {\nleft = mid + 1;\n}\n}\ncout << ans << endl;\nreturn 0;\n}",
+              "2025.12 五级 编程题 1《数字移动》 · CCF 官方真题参考程序",
+              "来源 gesp.ccf.org.cn 官方试卷 · 输入输出样例见原卷 · 完整代码逐行照敲"
+            ],
+            [
+              "#include <iostream>\nusing namespace std;\nconst int N = 100010;\nint num[N][20];\nint n, a[N];\nvoid calc_prime_factor(int x){\nfor(int i=2;i*i<=x;i++){\nif(x%i==0){\nint cnt=0;\nwhile(x%i==0){\nx/=i;\ncnt++;\n}\nnum[i][cnt]++;\n}\n}\nif(x>1){\nnum[x][1]++;\n}\n}\nint main(){\nscanf(\"%d\",&n);\nfor(int i=1;i<=n;i++){\nscanf(\"%d\",&a[i]);\ncalc_prime_factor(a[i]);\n}\nlong long ans=0;\nfor(int i=2;i<100001;i++){\nint pos = 0;\nfor(int j=0;j<20;j++){\npos += num[i][j];\n}\nnum[i][0]=n-pos;\nint median_exponent=0;\npos = 0;\nfor(int j=0;j<20;j++){\npos += num[i][j];\nif(pos*2>=n){\nmedian_exponent=j;\nbreak;\n}\n}\nfor(int j=0;j<20;j++){\nans+=num[i][j]*abs(j-median_exponent);\n}\n}\nprintf(\"%lld\\n\",ans);\n}",
+              "2025.12 五级 编程题 2《相等序列》 · CCF 官方真题参考程序",
+              "来源 gesp.ccf.org.cn 官方试卷 · 输入输出样例见原卷 · 完整代码逐行照敲"
+            ]
+          ]
+        },
+        {
+          "name": "真题 · 六级（CCF 官方 · 完整程序）",
+          "items": [
+            [
+              "#include <cstdio>\n#include <algorithm>\n\nusing namespace std;\n\nconst int N = 1e5 + 5;\n\nint n;\nint f[N], c[N], cnt[N];\nlong long ans[N];\n\nint main() {\nscanf(\"%d\", &n);\nfor (int i = 2; i <= n; i++) {\nscanf(\"%d\", &f[i]);\ncnt[f[i]]++;\n}\nfor (int i = 1; i <= n; i++)\nscanf(\"%d\", &c[i]);\nfor (int i = n; i >= 1; i--) {\nif (cnt[i] == 0)\nans[i] = c[i];\nans[i] = min(ans[i], 1ll * c[i]);\nans[f[i]] += ans[i];\n}\nprintf(\"%lld\\n\", ans[1]);\nreturn 0;\n}",
+              "2025.12 六级 编程题 1《路径覆盖》 · CCF 官方真题参考程序",
+              "来源 gesp.ccf.org.cn 官方试卷 · 输入输出样例见原卷 · 完整代码逐行照敲"
+            ],
+            [
+              "#include <cstdio>\n#include <algorithm>\n\nusing namespace std;\n\nconst int N = 505;\nconst int oo = 1e9 + 10;\n\nint n, k;\nint f[N * N];\n\nint main() {\nscanf(\"%d%d\", &n, &k);\nfor (int i = 1; i < N * N; i++)\nf[i] = oo;\nint s = 0;\nfor (int i = 1; i <= n; i++) {\nint a, c;\nscanf(\"%d%d\", &a, &c);\ns += a;\nfor (int j = s; j >= a; j--)\nf[j] = min(f[j], f[j - a] + c);\n}\nint ans = 0;\nfor (int i = 0; i < N * N; i++)\nif (f[i] <= k)\nans = i;\nprintf(\"%d\\n\", ans);\nreturn 0;\n}",
+              "2025.12 六级 编程题 2《道具商店》 · CCF 官方真题参考程序",
+              "来源 gesp.ccf.org.cn 官方试卷 · 输入 3 5 / 99 1 / 33 2 → 输出 132 · 完整代码逐行照敲"
+            ]
+          ]
+        },
+        {
+          "name": "真题 · 七级（CCF 官方 · 完整程序）",
+          "items": [
+            [
+              "#include <cstdio>\n#include <algorithm>\n#include <vector>\n\nusing namespace std;\n\nconst int N = 2005;\n\nint n, m;\nvector<int> e[N];\nint d[N], mx[N], q[N];\n\nvoid bfs(int u) {\nfor (int i = 1; i <= n; i++)\nd[i] = n + 1;\nd[u] = 0;\nq[1] = u;\nint ql = 1, qr = 1;\nwhile (ql <= qr) {\nint x = q[ql++];\nfor (auto y : e[x])\nif (d[x] + 1 < d[y]) {\nd[y] = d[x] + 1;\nq[++qr] = y;\n}\n}\nmx[u] = d[q[qr]];\n}\n\nint main() {\nscanf(\"%d%d\", &n, &m);\nfor (int i = 1; i <= m; i++) {\nint u, v;\nscanf(\"%d%d\", &u, &v);\ne[u].emplace_back(v);\ne[v].emplace_back(u);\n}\nint ans = 1;\nfor (int i = 1; i <= n; i++) {\nbfs(i);\nif (mx[i] < mx[ans])\nans = i;\n}\nprintf(\"%d\\n\", ans);\nreturn 0;\n}",
+              "2025.12 七级 编程题 1《城市规划》 · CCF 官方真题参考程序",
+              "来源 gesp.ccf.org.cn 官方试卷 · 输入输出样例见原卷 · 完整代码逐行照敲"
+            ],
+            [
+              "#include <cstdio>\n#include <algorithm>\n\nusing namespace std;\n\nconst int N = 305;\n\nint n;\nint c[N], a[N];\nint f[N][N];\nint ans;\n\nint main() {\nscanf(\"%d\", &n);\nfor (int i = 1; i <= n; i++)\nscanf(\"%d\", &c[i]);\nfor (int i = 1; i <= n; i++)\nscanf(\"%d\", &a[i]);\nsort(c + 1, c + n + 1);\nfor (int i = n; i >= 1; i--)\nfor (int j = 1; j <= n; j++)\nfor (int k = i; k <= n; k++) {\nint diff = 0;\nif (i > 1)\ndiff = c[n - j + 1] - c[j];\nf[j][k] = max(f[j][k], f[j - 1][k - i] + a[i] + diff);\nif (k == n)\nans = max(ans, f[j][k]);\n}\nprintf(\"%d\\n\", ans);\nreturn 0;\n}",
+              "2025.12 七级 编程题 2《学习小组》 · CCF 官方真题参考程序",
+              "来源 gesp.ccf.org.cn 官方试卷 · 输入输出样例见原卷 · 完整代码逐行照敲"
+            ]
+          ]
+        },
+        {
+          "name": "真题 · 八级（CCF 官方 · 完整程序）",
+          "items": [
+            [
+              "#include <cstdio>\n#include <algorithm>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nconst int N = 1e5 + 5;\nconst long long oo = 1e18;\n\nint n, m;\nint a, b;\nint c[N];\nvector<pair<int, int>> e[N];\nlong long dis[N];\npriority_queue<pair<long long, int>> q;\nlong long ans;\n\nint main() {\nscanf(\"%d%d\", &n, &m);\nscanf(\"%d%d\", &a, &b);\nfor (int i = 1; i <= n; i++)\nscanf(\"%d\", &c[i]);\nfor (int i = 1; i <= m; i++) {\nint u, v, w;\nscanf(\"%d%d%d\", &u, &v, &w);\ne[u].emplace_back(make_pair(v, w));\ne[v].emplace_back(make_pair(u, w));\n}\nfor (int i = 1; i <= n; i++)\ndis[i] = oo;\ndis[b] = 0;\nq.push(make_pair(-dis[b], b));\nwhile (!q.empty()) {\nauto p = q.top();\nq.pop();\nif (dis[p.second] != -p.first)\ncontinue;\nint u = p.second;\nfor (auto r : e[u]) {\nint v = r.first, w = r.second;\nif (dis[v] > dis[u] + w) {\ndis[v] = dis[u] + w;\nq.push(make_pair(-dis[v], v));\n}\n}\n}\nfor (int i = 1; i <= n; i++)\nif (dis[i] < dis[a])\nans += c[i];\nprintf(\"%lld\\n\", ans);\nreturn 0;\n}",
+              "2025.12 八级 编程题 1《猫和老鼠》 · CCF 官方真题参考程序",
+              "来源 gesp.ccf.org.cn 官方试卷 · 输入 5 5 / 1 2 / 1 2 4 8 16 → 输出 22 · 完整代码逐行照敲"
+            ],
+            [
+              "#include <cstdio>\n#include <algorithm>\n\nusing namespace std;\n\nconst int L = 20;\nconst int N = 2e5 + 5;\nconst int oo = 1e9;\n\nint n, m;\nint t[N], jump[L][N];\nint cnt[N], tot;\nint ans;\n\nint go(int u) {\nint cnt = 0, ans = 0;\nfor (int i = L - 1; i >= 0; i--)\nif (cnt + jump[i][u] <= n) {\ncnt += jump[i][u];\nans += 1 << i;\nu = (u + jump[i][u] - 1) % n + 1;\n}\nreturn ans;\n}\n\nint main() {\nscanf(\"%d%d\", &n, &m);\nfor (int i = 1; i <= n; i++) {\nscanf(\"%d\", &t[i]);\nt[i + n] = t[i];\n}\nfor (int i = 1, r = 0; i <= n; i++) {\nwhile (tot < m) {\nr++;\nif (!cnt[t[r]]++)\ntot++;\n}\njump[0][i] = r - i + 1;\nif (!--cnt[t[i]])\ntot--;\n}\nfor (int i = 1; i < L; i++)\nfor (int j = 1; j <= n; j++) {\nint tar = (j + jump[i - 1][j] - 1) % n + 1;\njump[i][j] = min(jump[i - 1][j] + jump[i - 1][tar], oo);\n}\nfor (int i = 1; i <= n; i++)\nans = max(ans, go(i));\nprintf(\"%d\\n\", ans);\nreturn 0;\n}",
+              "2025.12 八级 编程题 2《宝石项链》 · CCF 官方真题参考程序",
+              "来源 gesp.ccf.org.cn 官方试卷 · 输入输出样例见原卷 · 完整代码逐行照敲"
+            ]
+          ]
         }
       ]
     },
@@ -4597,7 +4577,7 @@
           ]
         },
         {
-          "name": "文件与模块",
+          "name": "文件读写",
           "items": [
             [
               "import math",
@@ -4623,6 +4603,46 @@
               "f.readlines()",
               "按行读取，返回列表",
               "with open(\"a.txt\") as f:\n    lines = f.readlines()"
+            ],
+            [
+              "with open(\"a.txt\", \"w\") as f:",
+              "以写入模式打开文件，不存在就创建",
+              "with open(\"a.txt\", \"w\") as f:\n    f.write(\"hi\")"
+            ],
+            [
+              "f.write(\"hello\")",
+              "把字符串写入文件",
+              "with open(\"a.txt\", \"w\") as f:\n    f.write(\"hello\")"
+            ],
+            [
+              "with open(\"a.txt\", \"r\") as f:",
+              "以只读模式打开文件",
+              "with open(\"a.txt\", \"r\") as f:\n    print(f.read())"
+            ],
+            [
+              "lines = f.readlines()",
+              "按行读出，返回列表",
+              "with open(\"a.txt\") as f:\n    lines = f.readlines()"
+            ],
+            [
+              "for line in f:",
+              "逐行遍历文件，最省内存",
+              "with open(\"a.txt\") as f:\n    for line in f:\n        print(line.strip())"
+            ],
+            [
+              "line.strip()",
+              "去掉行尾换行和空格",
+              "print(\"  hi  \\n\".strip())"
+            ],
+            [
+              "with open(\"a.txt\", \"a\") as f:",
+              "追加模式：不覆盖原内容",
+              "with open(\"a.txt\", \"a\") as f:\n    f.write(\"more\")"
+            ],
+            [
+              "import csv",
+              "导入 CSV 表格处理库",
+              "import csv\nwith open(\"d.csv\") as f:\n    rows = list(csv.reader(f))"
             ]
           ]
         },
@@ -5488,51 +5508,6 @@
               "print(\"*\" * 10)",
               "重复字符串 10 次",
               "print(\"*\" * 10)"
-            ]
-          ]
-        },
-        {
-          "name": "文件读写进阶",
-          "items": [
-            [
-              "with open(\"a.txt\", \"w\") as f:",
-              "以写入模式打开文件，不存在就创建",
-              "with open(\"a.txt\", \"w\") as f:\n    f.write(\"hi\")"
-            ],
-            [
-              "f.write(\"hello\")",
-              "把字符串写入文件",
-              "with open(\"a.txt\", \"w\") as f:\n    f.write(\"hello\")"
-            ],
-            [
-              "with open(\"a.txt\", \"r\") as f:",
-              "以只读模式打开文件",
-              "with open(\"a.txt\", \"r\") as f:\n    print(f.read())"
-            ],
-            [
-              "lines = f.readlines()",
-              "按行读出，返回列表",
-              "with open(\"a.txt\") as f:\n    lines = f.readlines()"
-            ],
-            [
-              "for line in f:",
-              "逐行遍历文件，最省内存",
-              "with open(\"a.txt\") as f:\n    for line in f:\n        print(line.strip())"
-            ],
-            [
-              "line.strip()",
-              "去掉行尾换行和空格",
-              "print(\"  hi  \\n\".strip())"
-            ],
-            [
-              "with open(\"a.txt\", \"a\") as f:",
-              "追加模式：不覆盖原内容",
-              "with open(\"a.txt\", \"a\") as f:\n    f.write(\"more\")"
-            ],
-            [
-              "import csv",
-              "导入 CSV 表格处理库",
-              "import csv\nwith open(\"d.csv\") as f:\n    rows = list(csv.reader(f))"
             ]
           ]
         },
