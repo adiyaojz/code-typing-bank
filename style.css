@@ -435,3 +435,23 @@ body.dark .f-RI{background:#23403e} body.dark .f-RM{background:#302c4a} body.dar
   .srs-card{padding:12px}
   .srs-actions{width:100%}
 }
+
+/* ===== 对战比赛：一键建房与邀请 ===== */
+.battle-btn{font-weight:700;letter-spacing:.5px}
+.battle-create{font-size:16px;padding:14px;font-weight:700}
+.battle-tip{margin:8px 0 14px;text-align:center}
+.ch-advanced{margin:0 0 14px;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.ch-advanced summary{cursor:pointer;font-size:12.5px;color:var(--ink-2);font-weight:600;padding:4px 0}
+.ch-advanced .ch-form{margin-top:10px}
+.ch-invite{margin:12px 0;padding:12px;border:1px dashed var(--line);border-radius:12px;background:var(--accent-soft)}
+.ch-invite-row{display:flex;gap:8px;margin:8px 0}
+.ch-invite-row input{flex:1;min-width:0;font-size:12px;padding:9px 10px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-family:ui-monospace,Menlo,Consolas,monospace}
+.ch-qr{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:8px}
+.ch-qr img{width:160px;height:160px;border-radius:8px;background:#fff;padding:6px}
+.ch-qr-tip{font-size:11.5px;color:var(--ink-3)}
+.ch-qr.qr-fail img{display:none}
+@media (max-width:700px){
+  .ch-form{grid-template-columns:repeat(2,1fr)}
+  .ch-invite-row{flex-wrap:wrap}
+  .ch-invite-row input{flex-basis:100%}
+}

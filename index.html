@@ -20,8 +20,8 @@
   } catch(e){}
 })();
 </script>
-<style>/* 静态托管：隐藏需要服务端的功能入口 */
-#btnChallenge,#btnAdmin{display:none!important}
+<style>/* 静态托管：只隐藏老师管理入口；对战比赛按钮跳到带服务端的应用 */
+#btnAdmin{display:none!important}
 </style>
 </head>
 <body>
@@ -71,7 +71,7 @@
       <span>SELECT MODULE · 选择词库开始特训</span>
       <span class="tools">
         <input class="search" id="search" placeholder="搜索分组…" autocomplete="off">
-        <button class="mini-btn primary" id="btnChallenge" title="多人同时限时比拼">联机限时挑战</button>
+        <button class="mini-btn primary battle-btn" id="btnChallenge" title="一键创建对战房间">对战比赛</button>
         <button class="mini-btn" id="btnCheckUpdate">检查更新</button>
         <button class="mini-btn" id="btnAdmin" title="老师入口">题库管理</button>
       </span>
@@ -214,17 +214,22 @@
 <!-- 联机限时挑战 -->
 <div class="overlay" id="challengeOverlay">
   <div class="card wide">
-    <h2>联机限时挑战</h2>
-    <p class="sub">同一房间用同一套题、各自限时，实时排行榜。把房间码发给同学，手机 / 平板 / 电脑都能加入。</p>
+    <h2>对战比赛 · 一键开房</h2>
+    <p class="sub">同一房间用同一套题、各自限时，实时排行榜。点「一键创建房间」即可开赛，把邀请链接或二维码发给同学，手机 / 平板 / 电脑打开即自动加入。</p>
 
     <div id="chSetup">
-      <div class="ch-form">
-        <label>昵称<input id="chName" type="text" maxlength="12" placeholder="如：小明" autocomplete="off"></label>
-        <label>语言<select id="chLang"></select></label>
-        <label>时长<select id="chDur"><option value="60">60 秒</option><option value="120" selected>120 秒</option><option value="180">180 秒</option><option value="300">300 秒</option></select></label>
-        <label>题量<select id="chCount"><option value="10">10 条</option><option value="15" selected>15 条</option><option value="25">25 条</option><option value="40">40 条</option></select></label>
-      </div>
-      <div class="row"><button class="main" id="btnChCreate" style="flex:1">创建房间</button></div>
+      <div class="row"><button class="main battle-create" id="btnChQuick" style="width:100%">一键创建对战房间</button></div>
+      <p class="sub battle-tip">默认 C++ · 15 条 · 120 秒；创建后自动复制邀请链接。</p>
+      <details class="ch-advanced">
+        <summary>房间设置 / 自定义参数</summary>
+        <div class="ch-form">
+          <label>昵称<input id="chName" type="text" maxlength="12" placeholder="留空自动生成" autocomplete="off"></label>
+          <label>语言<select id="chLang"></select></label>
+          <label>时长<select id="chDur"><option value="60">60 秒</option><option value="120" selected>120 秒</option><option value="180">180 秒</option><option value="300">300 秒</option></select></label>
+          <label>题量<select id="chCount"><option value="10">10 条</option><option value="15" selected>15 条</option><option value="25">25 条</option><option value="40">40 条</option></select></label>
+        </div>
+        <div class="row"><button class="main ghost" id="btnChCreate" style="flex:1">按设置创建房间</button></div>
+      </details>
       <div class="ch-join">
         <input id="chCode" type="text" maxlength="6" placeholder="输入 6 位房间码" autocomplete="off" spellcheck="false">
         <button class="main ghost" id="btnChJoin">加入房间</button>
@@ -239,10 +244,19 @@
         <button class="mini-btn" id="btnChCopy">复制</button>
       </div>
       <p class="sub" id="chRoomInfo">-</p>
+      <div class="ch-invite">
+        <div class="ch-room-label">邀请链接（同学打开即自动加入）</div>
+        <div class="ch-invite-row">
+          <input id="chInvite" type="text" readonly spellcheck="false" aria-label="邀请链接">
+          <button class="mini-btn primary" id="btnChCopyLink">复制链接</button>
+        </div>
+        <div class="ch-qr" id="chQr"><img id="chQrImg" alt="房间二维码"><span class="ch-qr-tip">扫码加入 · 复制上方链接也可以</span></div>
+      </div>
       <div class="ch-board" id="chBoard"></div>
       <div class="row">
         <button class="main" id="btnChStart">开始挑战</button>
         <button class="main ghost" id="btnChRefresh">刷新榜单</button>
+        <button class="main ghost" id="btnChSwitch">加入其他房间</button>
         <button class="main ghost" id="btnChLeave">退出房间</button>
       </div>
     </div>
@@ -254,6 +268,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="hl.js"></script>
+<script>window.BATTLE_URL = 'https://code-typing-battle.app.workbuddy.host/?sharecode=YYGWRTSV6K';</script>
 <script src="app.js"></script>
 </body>
 </html>
