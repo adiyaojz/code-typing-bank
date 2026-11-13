@@ -863,8 +863,11 @@ function bindInput(){
   if (window.visualViewport) {
     const vv = window.visualViewport;
     const onVV = () => {
-      const gap = window.innerHeight - vv.height - vv.offsetTop;
-      document.body.classList.toggle('kbd-open', practicing && gap > 130);
+      const gap = Math.round(window.innerHeight - vv.height - vv.offsetTop);
+      const open = practicing && gap > 130;
+      document.body.classList.toggle('kbd-open', open);
+      // 键盘弹出时把整页高度锁到「可视视口」，符号条才会贴在键盘上方，而不是被挡到键盘后面
+      document.documentElement.style.setProperty('--vvh', open ? Math.round(vv.height) + 'px' : '');
       syncKbDock();
     };
     vv.addEventListener('resize', onVV);
